@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <script src="bower_components/rot.js/rot.js"></script>
     </head>
     <body>
 
@@ -34,7 +35,7 @@
         // Copyright © 2014 John Watson
         // Licensed under the terms of the MIT License
         var GameState = function(game) {
-            this.MAX_MISSILES = 10; // number of missiles
+            this.MAX_MISSILES = 1; // number of missiles
         };
 
         // Load images and sounds
@@ -61,6 +62,8 @@
             this.game.input.activePointer.x = this.game.width/2;
             this.game.input.activePointer.y = this.game.height/2 - 100;
 
+            console.log(ROT.isSupported());
+            ROT.RNG.setSeed(12345);
         };
 
         // The update() method is called every frame
@@ -69,8 +72,10 @@
             if (this.missileGroup.countLiving() < this.MAX_MISSILES) {
                 // Set the launch point to a random location below the bottom edge
                 // of the stage
-                this.launchMissile(this.game.rnd.integerInRange(50, this.game.width-50),
-                    this.game.height + 50);
+                //this.launchMissile(this.game.rnd.integerInRange(50, this.game.width-50), this.game.height + 50);
+                var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.width-100)) + 50;
+                console.log(spawnX);
+                this.launchMissile( spawnX, this.game.height + 50);
             }
 
             // If any missile is within a certain distance of the mouse pointer, blow it up
