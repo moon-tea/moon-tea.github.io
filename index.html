@@ -29,8 +29,7 @@
 
         // Load images and sounds
         GameState.prototype.preload = function() {
-            //this.game.load.image('rocket', 'assets/gfx/rocket.png');
-            //this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
+
         };
 
         // Setup the example
@@ -42,10 +41,7 @@
             // Create a group to hold the rabbit
             this.rabbitGroup = this.game.add.group();
 
-            // Create a group for explosions
-            this.explosionGroup = this.game.add.group();
-
-             // Create a group to old the carrots
+            // Create a group to old the carrots
             this.carrotGroup = this.game.add.group();
 
             // Create a group to hold the dens
@@ -102,15 +98,6 @@
             this.output += "\ncarrots consumed: " + this.carrots_eaten;
             this.text = game.add.text(5, game.world.height-60, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
-            //// If any rabbit is within a certain distance of the mouse pointer, blow it up
-            //this.rabbitGroup.forEachAlive(function(m) {
-            //    var distance = this.game.math.distance(m.x, m.y,
-            //        this.game.input.activePointer.x, this.game.input.activePointer.y);
-            //    if (distance < 50) {
-            //        m.kill();
-            //        this.getExplosion(m.x, m.y);
-            //    }
-            //}, this);
             this.rabbitGroup.forEachAlive(function(rabbit) {
                 if(!rabbit.carrot) {
                     var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
@@ -174,7 +161,7 @@
             }
 
             // Revive the rabbit (set it's alive property to true)
-            // You can also define a onRevived event handler in your explosion objects
+            // You can also define a onRevived event handler
             // to do stuff when they are revived.
             rabbit.revive();
 
@@ -184,47 +171,6 @@
             rabbit.distance = 100000;
 
             return rabbit;
-        };
-
-        // Try to get a used explosion from the explosionGroup.
-        // If an explosion isn't available, create a new one and add it to the group.
-        // Setup new explosions so that they animate and kill themselves when the
-        // animation is complete.
-        GameState.prototype.getExplosion = function(x, y) {
-            // Get the first dead explosion from the explosionGroup
-            var explosion = this.explosionGroup.getFirstDead();
-
-            // If there aren't any available, create a new one
-            if (explosion === null) {
-                explosion = this.game.add.sprite(0, 0, 'explosion');
-                explosion.anchor.setTo(0.5, 0.5);
-
-                // Add an animation for the explosion that kills the sprite when the
-                // animation is complete
-                var animation = explosion.animations.add('boom', [0,1,2,3], 60, false);
-                animation.killOnComplete = true;
-
-                // Add the explosion sprite to the group
-                this.explosionGroup.add(explosion);
-            }
-
-            // Revive the explosion (set it's alive property to true)
-            // You can also define a onRevived event handler in your explosion objects
-            // to do stuff when they are revived.
-            explosion.revive();
-
-            // Move the explosion to the given coordinates
-            explosion.x = x;
-            explosion.y = y;
-
-            // Set rotation of the explosion at random for a little variety
-            explosion.angle = this.game.rnd.integerInRange(0, 360);
-
-            // Play the animation
-            explosion.animations.play('boom');
-
-            // Return the explosion itself in case we want to do anything else with it
-            return explosion;
         };
 
         // Rabbit constructor
@@ -258,7 +204,7 @@
                 "0xd3c0af",
                 "0xc8b09c",
             ];
-            var rand = Math.floor(Math.random() * colors.length);
+            var rand = Math.floor(ROT.RNG.getUniform() * colors.length);
             this.color = colors[rand];
 
             // Create a variable called wobble that tweens back and forth between
@@ -290,7 +236,7 @@
             var colors = [
                 "0xE59400"
             ];
-            var rand = Math.floor(Math.random() * colors.length);
+            var rand = Math.floor(ROT.RNG.getUniform() * colors.length);
             this.color = colors[rand];
         };
 
@@ -345,6 +291,7 @@
                     // Chose an avoidance angle of 90 or -90 (in radians)
                     avoidAngle = Math.PI/2; // zig
                     //if (this.game.math.chanceRoll(50)) avoidAngle *= -1; // zag
+                    //NOTE: here we don't use a seeded uniform, becuase it is too random
                     if (Phaser.Utils.chanceRoll(50)) avoidAngle *= -1; // zag
                 }
             }, this);
@@ -389,8 +336,6 @@
         game.state.add('game', GameState, true);
         
     };
-
     </script>
-
     </body>
 </html>
