@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <script src="bower_components/rot.js/rot.js"></script>
     </head>
     <body>
 
@@ -18,8 +19,7 @@
         var GameState = function(game) {
             this.MAX_RABBITS = 10; // number of rabbits
             //this.MAX_RABBITS = 10; // number of rabbits
-            this.MAX_CARROTS = 35; // number of carrots
-            this.STARTING_RABBITS = 10; // number of rabbits
+            this.CARROTS_NEEDED = 50; // number of carrots
             this.STARTING_RABBITS = 10; // number of rabbits
             this.FRAMES_PER_DAY =  60;
             this.DAYS_PER_YEAR = 16; 
@@ -29,16 +29,15 @@
 
         // Load images and sounds
         GameState.prototype.preload = function() {
-            this.game.load.image('rocket', 'assets/gfx/rocket.png');
-            
-            this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
+            //this.game.load.image('rocket', 'assets/gfx/rocket.png');
+            //this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
         };
 
         // Setup the example
         GameState.prototype.create = function() {
             // Set stage background to something sky colored
             this.game.stage.backgroundColor = "0x489030";
-            console.log("here");
+
             //this.field = Field(game, 640, 480);
             // Create a group to hold the rabbit
             this.rabbitGroup = this.game.add.group();
@@ -54,6 +53,7 @@
 
             this.frameCount = 0;
             this.dayCount = 0;
+            this.carrots_eaten = 0;
             this.output = "dayCount:" + this.dayCount;
             this.text = game.add.text(20, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "center" });
 
@@ -62,45 +62,106 @@
             this.game.input.activePointer.x = this.game.width/2;
             this.game.input.activePointer.y = this.game.height/2 - 100;
 
+            console.log(ROT.isSupported());
+            ROT.RNG.setSeed(12345);
         };
 
         // The update() method is called every frame
         GameState.prototype.update = function() {
             this.frameCount++;
+            this.text.destroy();
+            
+            this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
+            
             //this.text = game.add.text(game.world.centerX, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "center" });
             if (this.frameCount == this.FRAMES_PER_DAY) {
                 this.frameCount = 0;
                 this.dayCount++;
-                this.output = "dayCount:" + this.dayCount;
-                this.text.destroy();
-                this.text = game.add.text(20, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "center" });
-            }
-
-            if(this.dayCount) {
-
-            }
-
+                //if(this.season === "SPRING") {
+                    
+                    if (this.carrotGroup.countLiving() < this.CARROTS_NEEDED) {
+                        //this.spawnCarrot(spawnX, spawnY);
+                    }
+                //}
+            }            
+            
             // If there are fewer than MAX_RABBITS, launch a new one
             if (this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
                 // Set the launch point to a random location below the bottom edge
                 // of the stage
                 //this.launchRabbit(this.game.rnd.integerInRange(50, this.game.width-50),
                 //    this.game.height + 50);
+                var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.width-100)) + 50;
+                console.log(spawnX);
                 this.launchRabbit(this.game.world.centerX, this.game.world.centerY);
             }
+            
+            this.output = "";
+            this.output += "dayCount: " + this.dayCount;
+            this.output += "\nseason: " + this.season;
+            this.output += "\ncarrots consumed: " + this.carrots_eaten;
+            this.text = game.add.text(5, game.world.height-60, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
-           //// If any rabbit is within a certain distance of the mouse pointer, blow it up
-           //this.rabbitGroup.forEachAlive(function(m) {
-           //    var distance = this.game.math.distance(m.x, m.y,
-           //        this.game.input.activePointer.x, this.game.input.activePointer.y);
-           //    if (distance < 50) {
-           //        m.kill();
-           //        this.getExplosion(m.x, m.y);
-           //    }
-           //}, this);
+            //// If any rabbit is within a certain distance of the mouse pointer, blow it up
+            //this.rabbitGroup.forEachAlive(function(m) {
+            //    var distance = this.game.math.distance(m.x, m.y,
+            //        this.game.input.activePointer.x, this.game.input.activePointer.y);
+            //    if (distance < 50) {
+            //        m.kill();
+            //        this.getExplosion(m.x, m.y);
+            //    }
+            //}, this);
+            this.rabbitGroup.forEachAlive(function(rabbit) {
+                if(!rabbit.carrot) {
+                    var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
+                    var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
+                    var c = this.spawnCarrot(spawnX, spawnY);
+                    rabbit.carrot = c;
+                    //rabbit.distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
+                    rabbit.targetX = rabbit.carrot.x;
+                    rabbit.targetY = rabbit.carrot.y;
+                } else {
+                    var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
+                    if (distance < rabbit.carrot.EAT_DISTANCE) {
+                        console.log("kill!");
+                        rabbit.carrot.kill();
+                        rabbit.carrot = null;
+                        this.carrots_eaten++;
+                    }
+                }
+            }, this);
+
+            //this.carrotGroup.forEachAlive(function(carrot) {
+            //
+            //}, this);
         };
 
         // Try to get a rabbit from the rabbitGroup
+        // If a rabbit isn't available, create a new one and add it to the group.
+        GameState.prototype.spawnCarrot = function(x, y) {
+            // // Get the first dead carrot from the carrotGroup
+            var carrot = this.carrotGroup.getFirstDead();
+
+            // If there aren't any available, create a new one
+            if (carrot === null) {
+                carrot = new Carrot(this.game);
+                this.carrotGroup.add(carrot);
+            }
+
+            // Revive the carrot (set it's alive property to true)
+            // You can also define a onRevived event handler in your carrot objects
+            // to do stuff when they are revived.
+            carrot.revive();
+
+            // Move the carrot to the given coordinates
+            carrot.x = x;
+            carrot.y = y;
+            carrot.claimed = false;
+
+            return carrot;
+        };
+
+         // Try to get a rabbit from the rabbitGroup
         // If a rabbit isn't available, create a new one and add it to the group.
         GameState.prototype.launchRabbit = function(x, y) {
             // // Get the first dead rabbit from the rabbitGroup
@@ -120,6 +181,7 @@
             // Move the rabbit to the given coordinates
             rabbit.x = x;
             rabbit.y = y;
+            rabbit.distance = 100000;
 
             return rabbit;
         };
@@ -165,50 +227,6 @@
             return explosion;
         };
 
-        var Field = function(game, width, height) {
-            this.bmd = game.add.bitmapData(width, height);
-            console.log(">>>>")
-            var old_time = new Date();
-            for(var i = 0; i < 100; i+=2) {
-                for(var j = 0; j < 100; j+=2) {
-                    if(Phaser.Utils.chanceRoll(70)) {
-                        this.bmd.setPixel(i, j, 120, 144, 48, 255);
-                        this.bmd.setPixel(i, j+1, 120, 144, 48, 255);
-                        this.bmd.setPixel(i+1, j, 120, 144, 48, 255);
-                        this.bmd.setPixel(i+1, j+1, 120, 144, 48, 255);
-                    } else {
-                        if(Phaser.Utils.chanceRoll(70)) {
-                            this.bmd.setPixel(i, j, 72, 144, 48, 255);
-                            this.bmd.setPixel(i+1, j, 72, 144, 48, 255);
-                            this.bmd.setPixel(i, j+1, 72, 144, 48, 255);
-                            this.bmd.setPixel(i+1, j+1, 72, 144, 48, 255);
-                        } else {
-                            this.bmd.setPixel(i, j, 144, 120, 48, 0);
-                            this.bmd.setPixel(i+1, j, 144, 120, 48, 0);
-                            this.bmd.setPixel(i, j+1, 144, 120, 48, 0);
-                            this.bmd.setPixel(i+1, j+1, 144, 120, 48, 0);
-                        }
-                    }
-                }
-            }
-            var new_time = new Date();
-            console.log(new_time - old_time);
-            //    console.log("here");
-            //    for(var j = 0; j < height; i++) {
-            //        this.bmd.setPixel(i, j, 120, 144, 48, 0);
-            //            //this.bmd.setPixel(i, j, 120, 144, 48, 0);
-            //        } else {
-            //            if(Phaser.Utils.chanceRoll(70)) {
-            //                //this.bmd.setPixel(i, j, 72, 144, 48, 0);
-            //            } else {
-            //                //this.bmd.setPixel(i, j, 144, 120, 48, 0);
-            //            }
-            //        }
-            //    }
-            //}
-            game.add.sprite(0, 0, this.bmd);
-        };
-
         // Rabbit constructor
         var Rabbit = function(game, x, y) {
             //Phaser.Sprite.call(this, game, x, y, 'rocket');
@@ -225,7 +243,7 @@
 
             // Define constants that affect motion
             this.SPEED = 7; // 5mph
-            this.SPEED = 7*5; // 25mph
+            this.SPEED = 7*5; // 125mph
             this.TURN_RATE = 15; // turn rate in degrees/frame
             this.WOBBLE_LIMIT = 5; // degrees
             this.WOBBLE_SPEED = 250; // milliseconds
@@ -254,24 +272,56 @@
                 );
         };
 
-        Field.prototype = Object.create(Phaser.Sprite.prototype);
-        Field.prototype.constructor = Field;
-        // Rabbits are a type of Phaser.Sprite
+        var Carrot = function(game, x, y) {
+            //Phaser.Sprite.call(this, game, x, y, 'rocket');
+            Phaser.Graphics.call(this, game, x, y);
+            this.graphics = game.add.graphics(0, 0);
+            window.graphics = this.graphics;
+            
+            // Set the pivot point for this sprite to the center
+            this.anchor.setTo(0.5, 0.5);
+            
+            // Enable physics on the carrot
+            //this.game.physics.enable(this, Phaser.Physics.ARCADE);
+
+            // Define constants that affect collision
+            this.EAT_DISTANCE = 4; //pixels
+
+            var colors = [
+                "0xE59400"
+            ];
+            var rand = Math.floor(Math.random() * colors.length);
+            this.color = colors[rand];
+        };
+
+        // Rabbits are a type of Phaser.Graphics
         Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
         Rabbit.prototype.constructor = Rabbit;
+        // Carrots are a type of Phaser.Graphics
+        Carrot.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
+        Carrot.prototype.constructor = Carrot;
+        
+        Carrot.prototype.update = function() {
+            // draw a rectangle
+            this.graphics.clear();
+            if(this.alive) {
+                graphics.lineStyle(1, this.color, 1);
+                graphics.drawRect(this.x, this.y, 1, 1);
+            }
+        };
+        
         Rabbit.prototype.update = function() {
-            // Calculate the angle from the rabbit to the mouse cursor game.input.x
-            // and game.input.y are the mouse position; substitute with whatever
+            // Calculate the angle from the rabbit to the nearest carrot 
+            //substitute with whatever
             // target coordinates you need.
             var targetAngle = this.game.math.angleBetween(
                 this.x, this.y,
-                this.game.input.activePointer.x, this.game.input.activePointer.y
+                this.targetX, this.targetY
             );
 
             // Add our "wobble" factor to the targetAngle to make the rabbit wobble
             // Remember that this.wobble is tweening (above)
             targetAngle += this.game.math.degToRad(this.wobble);
-
 
             // Make each rabbit steer away from other rabbits.
             // Each rabbit knows the group that it belongs to (rabbitGroup).
@@ -329,15 +379,13 @@
             this.body.velocity.x = Math.cos(this.rotation) * this.SPEED;
             this.body.velocity.y = Math.sin(this.rotation) * this.SPEED;
             
-             // draw a rectangle
+            // draw a rectangle
             this.graphics.clear();
-            
-
             graphics.lineStyle(1, this.color, 1);
             graphics.drawRect(this.x, this.y, 1, 1);
         };
 
-        var game = new Phaser.Game(640, 480, Phaser.AUTO, 'game');
+        var game = new Phaser.Game(300, 300, Phaser.AUTO, 'game');
         game.state.add('game', GameState, true);
         
     };
