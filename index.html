@@ -16,15 +16,15 @@
             this.MAX_RABBITS = 10; // number of rabbits
             //this.MAX_RABBITS = 10; // number of rabbits
             this.CARROTS_NEEDED = 50; // number of carrots
-            this.STARTING_RABBITS = 1; // number of rabbits
+            this.STARTING_RABBITS = 10; // number of rabbits
             //TIME
             this.FRAMES_PER_SECOND = 1;
             this.SECONDS_PER_MINUTE = 16.6; //Minecraft Time if FRAMES_PER_SECOND = 1
             this.MINUTES_PER_HOUR = 6;//60;
-            this.HOURS_PER_DAY = 1;//24;
+            this.HOURS_PER_DAY = 4;//24;
             this.DAYS_PER_SEASON = 4;//91;
             this.DAYS_PER_YEAR = 16;//364; 
-            this.PIXELS_PER_FEET = 1;
+            this.PIXELS_PER_FEET = 32;//1;
             this.SEASONS = ["SPRING", "SUMMER", "FALL", "WINTER"]; 
         };
 
@@ -75,13 +75,6 @@
             this.hourCount = Math.floor(this.minuteCount / this.MINUTES_PER_HOUR);
             this.dayCount = Math.floor(this.hourCount / this.HOURS_PER_DAY);
             this.yearCount = Math.floor(this.dayCount / this.DAYS_PER_YEAR);
-            console.log(
-                this.secondCount,
-                this.minuteCount,
-                this.hourCount,
-                this.dayCount,
-                this.yearCount 
-            );
             //Math.floor(secondCount / FRAMES_PER_SECOND);
             this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
 
@@ -105,17 +98,18 @@
                 //    this.game.height + 50);
                 var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.width-100)) + 50;
                 console.log(spawnX);
-                this.launchRabbit(this.game.world.centerX, this.game.world.centerY, (60 / this.FRAMES_PER_SECOND) );
+                this.launchRabbit(this.game.world.centerX, this.game.world.centerY, (60 / this.FRAMES_PER_SECOND /this.PIXELS_PER_FEET) );
             }
             
             this.output = "";
-            this.output += "time: " + this.secondCount;
+            this.output += "time: y"+this.yearCount+": d"+this.dayCount+": h"+this.hourCount+": m"+this.minuteCount;
             this.output += "\nseason: " + this.season;
             this.output += "\ncarrots consumed: " + this.carrots_eaten;
             this.text = game.add.text(5, game.world.height-60, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
             this.rabbitGroup.forEachAlive(function(rabbit) {
-                console.log(rabbit.speed);
+                rabbit.feetTraveled += rabbit.speed / this.FRAMES_PER_SECOND /this.PIXELS_PER_FEET;
+                console.log(Math.floor(rabbit.feetTraveled), rabbit.feetTraveled / this.minuteCount );
                 if(!rabbit.carrot) {
                     var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
                     var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
@@ -186,8 +180,9 @@
             rabbit.x = x;
             rabbit.y = y;
             rabbit.distance = 100000;
+            rabbit.feetTraveled = 0;
             //              walking speed
-            rabbit.speed = 14 //* FEET_PER_SECOND;
+            rabbit.speed = 3 * FEET_PER_SECOND;
 
             return rabbit;
         };
@@ -251,10 +246,10 @@
             // Define constants that affect motion
             //this.SPEED = 4.4; // 4.4 feet per second = 3mph
             //this.SPEED = 7*5; // 125mph
-            this.TURN_RATE = 15; // turn rate in degrees/frame
+            this.TURN_RATE = 45;//15; // turn rate in degrees/frame
             this.WOBBLE_LIMIT = 5; // degrees
             this.WOBBLE_SPEED = 250; // milliseconds
-            this.AVOID_DISTANCE = 10; // pixels
+            this.AVOID_DISTANCE = 1; // pixels
 
             var colors = [
                 "0x926239",
@@ -267,6 +262,7 @@
             ];
             var rand = Math.floor(Math.random() * colors.length);
             this.color = colors[rand];
+            this.feetTraveled = 0;
 
             // Create a variable called wobble that tweens back and forth between
             // -this.WOBBLE_LIMIT and +this.WOBBLE_LIMIT forever
@@ -385,14 +381,14 @@
             // Calculate velocity vector based on this.rotation and this.SPEED
             this.body.velocity.x = Math.cos(this.rotation) * this.speed;
             this.body.velocity.y = Math.sin(this.rotation) * this.speed;
-            
+
             // draw a rectangle
             this.graphics.clear();
             graphics.lineStyle(1, this.color, 1);
             graphics.drawRect(this.x, this.y, 1, 1);
         };
 
-        var game = new Phaser.Game(208, 208, Phaser.AUTO, 'game');
+        var game = new Phaser.Game(416, 416, Phaser.AUTO, 'game');
         game.state.add('game', GameState, true);  
     };
     </script>
