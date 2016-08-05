@@ -13,19 +13,54 @@
     window.onload = function() {
         // This example uses the Phaser 2.2.2 framework
         var GameState = function(game) {
-            this.MAX_RABBITS = 10; // number of rabbits
+            this.MAX_RABBITS = 1; // number of rabbits
             //this.MAX_RABBITS = 10; // number of rabbits
             this.CARROTS_NEEDED = 50; // number of carrots
-            this.STARTING_RABBITS = 10; // number of rabbits
+            this.STARTING_RABBITS = 1; // number of rabbits
             //TIME
-            this.FRAMES_PER_SECOND = 1;
-            this.SECONDS_PER_MINUTE = 16.6; //Minecraft Time if FRAMES_PER_SECOND = 1
-            this.MINUTES_PER_HOUR = 6;//60;
-            this.HOURS_PER_DAY = 4;//24;
-            this.DAYS_PER_SEASON = 4;//91;
-            this.DAYS_PER_YEAR = 16;//364; 
-            this.PIXELS_PER_FEET = 32;//1;
-            this.SEASONS = ["SPRING", "SUMMER", "FALL", "WINTER"]; 
+            var realTime = {
+                FRAMES_PER_SECOND: 60,
+                SECONDS_PER_MINUTE: 60,
+                MINUTES_PER_HOUR: 60,
+                HOURS_PER_DAY: 24,
+                DAYS_PER_SEASON: 91,
+                DAYS_PER_YEAR: 364, 
+                PIXELS_PER_FEET: 1,
+                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]
+            };
+
+            var bigTime = {
+                FRAMES_PER_SECOND: .01,
+                SECONDS_PER_MINUTE: 60, 
+                MINUTES_PER_HOUR: 60,
+                HOURS_PER_DAY: 24,
+                DAYS_PER_SEASON: 91,
+                DAYS_PER_YEAR: 364, 
+                PIXELS_PER_FEET: 1/120,
+                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]
+            };
+
+            var minecraftTime = {
+                FRAMES_PER_SECOND: 60,
+                SECONDS_PER_MINUTE: 16.6,
+                MINUTES_PER_HOUR: 6,
+                HOURS_PER_DAY: 4,
+                DAYS_PER_SEASON: 4,
+                DAYS_PER_YEAR: 16,
+                PIXELS_PER_FEET: 200,
+                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]     
+            };
+
+            //Set the time variable
+            this.time = bigTime;
+            this.FRAMES_PER_SECOND = this.time.FRAMES_PER_SECOND; 
+            this.SECONDS_PER_MINUTE = this.time.SECONDS_PER_MINUTE; 
+            this.MINUTES_PER_HOUR = this.time.MINUTES_PER_HOUR; 
+            this.HOURS_PER_DAY = this.time.HOURS_PER_DAY; 
+            this.DAYS_PER_SEASON = this.time.DAYS_PER_SEASON; 
+            this.DAYS_PER_YEAR = this.time.DAYS_PER_YEAR; 
+            this.PIXELS_PER_FEET = this.time.PIXELS_PER_FEET; 
+            this.SEASONS = this.time.SEASONS; 
         };
 
         // Load images and sounds
@@ -75,44 +110,30 @@
             this.hourCount = Math.floor(this.minuteCount / this.MINUTES_PER_HOUR);
             this.dayCount = Math.floor(this.hourCount / this.HOURS_PER_DAY);
             this.yearCount = Math.floor(this.dayCount / this.DAYS_PER_YEAR);
-            //Math.floor(secondCount / FRAMES_PER_SECOND);
             this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
-
-            //this.text = game.add.text(game.world.centerX, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "center" });
-            if (this.frameCount == this.FRAMES_PER_SECOND) {
-                //this.frameCount = 0;
-                this.secondCount++;
-                //if(this.season === "SPRING") {
-                    
-                    if (this.carrotGroup.countLiving() < this.CARROTS_NEEDED) {
-                        //this.spawnCarrot(spawnX, spawnY);
-                    }
-                //}
-            }            
-            
+                        
             // If there are fewer than MAX_RABBITS, launch a new one
             if (this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
-                // Set the launch point to a random location below the bottom edge
-                // of the stage
-                //this.launchRabbit(this.game.rnd.integerInRange(50, this.game.width-50),
-                //    this.game.height + 50);
-                var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.width-100)) + 50;
-                console.log(spawnX);
-                this.launchRabbit(this.game.world.centerX, this.game.world.centerY, (60 / this.FRAMES_PER_SECOND /this.PIXELS_PER_FEET) );
+                //this.launchRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) / this.PIXELS_PER_FEET) );
+                this.launchRabbit(0, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
             }
             
             this.output = "";
-            this.output += "time: y"+this.yearCount+": d"+this.dayCount+": h"+this.hourCount+": m"+this.minuteCount;
+            this.output += "game time-:"+this.yearCount+"y, "+this.dayCount+"d, "+this.hourCount+"h, "+this.minuteCount+"m, "+this.secondCount+"s";
             this.output += "\nseason: " + this.season;
+            this.output += "\nmapsize: " + this.game.world.width/this.PIXELS_PER_FEET+"sqft";
             this.output += "\ncarrots consumed: " + this.carrots_eaten;
-            this.text = game.add.text(5, game.world.height-60, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
+            var count = this.output.split("\n").length;
+            this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
             this.rabbitGroup.forEachAlive(function(rabbit) {
-                rabbit.feetTraveled += rabbit.speed / this.FRAMES_PER_SECOND /this.PIXELS_PER_FEET;
-                console.log(Math.floor(rabbit.feetTraveled), rabbit.feetTraveled / this.minuteCount );
+                rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
+                console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
                 if(!rabbit.carrot) {
                     var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
                     var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
+                    //var spawnX = this.game.world.width-2;
+                    //var spawnY = this.game.world.centerY; 
                     var c = this.spawnCarrot(spawnX, spawnY);
                     rabbit.carrot = c;
                     //rabbit.distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
@@ -123,6 +144,7 @@
                     if (distance < rabbit.carrot.EAT_DISTANCE) {
                         console.log("kill!");
                         rabbit.carrot.kill();
+                        rabbit.calorieCountOfFoodInStomach += rabbit.carrot.CALORIE_COUNT;
                         rabbit.carrot = null;
                         this.carrots_eaten++;
                     }
@@ -181,51 +203,11 @@
             rabbit.y = y;
             rabbit.distance = 100000;
             rabbit.feetTraveled = 0;
-            //              walking speed
-            rabbit.speed = 3 * FEET_PER_SECOND;
+            //              walking speed of 4.4 feet per second
+            // multiplied by the time/pixels ration
+            rabbit.speed = 4.4 * FEET_PER_SECOND; //pixels per second
 
             return rabbit;
-        };
-
-        // Try to get a used explosion from the explosionGroup.
-        // If an explosion isn't available, create a new one and add it to the group.
-        // Setup new explosions so that they animate and kill themselves when the
-        // animation is complete.
-        GameState.prototype.getExplosion = function(x, y) {
-            // Get the first dead explosion from the explosionGroup
-            var explosion = this.explosionGroup.getFirstDead();
-
-            // If there aren't any available, create a new one
-            if (explosion === null) {
-                explosion = this.game.add.sprite(0, 0, 'explosion');
-                explosion.anchor.setTo(0.5, 0.5);
-
-                // Add an animation for the explosion that kills the sprite when the
-                // animation is complete
-                var animation = explosion.animations.add('boom', [0,1,2,3], 60, false);
-                animation.killOnComplete = true;
-
-                // Add the explosion sprite to the group
-                this.explosionGroup.add(explosion);
-            }
-
-            // Revive the explosion (set it's alive property to true)
-            // You can also define a onRevived event handler in your explosion objects
-            // to do stuff when they are revived.
-            explosion.revive();
-
-            // Move the explosion to the given coordinates
-            explosion.x = x;
-            explosion.y = y;
-
-            // Set rotation of the explosion at random for a little variety
-            explosion.angle = this.game.rnd.integerInRange(0, 360);
-
-            // Play the animation
-            explosion.animations.play('boom');
-
-            // Return the explosion itself in case we want to do anything else with it
-            return explosion;
         };
 
         // Rabbit constructor
@@ -251,28 +233,25 @@
             this.WOBBLE_SPEED = 250; // milliseconds
             this.AVOID_DISTANCE = 1; // pixels
 
-            var colors = [
-                "0x926239",
-                "0x967327",
-                "0x90594a",
-                "0xa5684a",
-                "0x5b3d24",
-                "0xd3c0af",
-                "0xc8b09c",
-            ];
-            var rand = Math.floor(Math.random() * colors.length);
+            var colors = ["0x926239", "0x967327", "0x90594a", "0xa5684a", "0x5b3d24", "0xd3c0af", "0xc8b09c", ];
+            var rand = Math.floor(ROT.RNG.getUniform() * colors.length);
             this.color = colors[rand];
-            this.feetTraveled = 0;
+            this.feetTraveled = 0; //feet
+            //start dietary needs
+            this.weight = 6; //lbs
+            this.poundsOfNonFat = 5; //lbs
+            this.poundsOfFat = this.weight - this.poundsOfNonFat; //lbs
+            this.calorieNeedsPerDay = 200; //cal
+            this.calorieCountOfFoodInStomach = 0; //cal
+            this.stomachCapacity = 400; //cal
+            this.digestionRatePerDay = 400; //cal
 
             // Create a variable called wobble that tweens back and forth between
             // -this.WOBBLE_LIMIT and +this.WOBBLE_LIMIT forever
             this.wobble = this.WOBBLE_LIMIT;
-            this.game.add.tween(this)
-                .to(
-                    { wobble: -this.WOBBLE_LIMIT },
-                    this.WOBBLE_SPEED, Phaser.Easing.Sinusoidal.InOut, true, 0,
-                    Number.POSITIVE_INFINITY, true
-                );
+            this.game.add.tween(this).to(
+                { wobble: -this.WOBBLE_LIMIT }, this.WOBBLE_SPEED, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.POSITIVE_INFINITY, true
+            );
         };
 
         var Carrot = function(game, x, y) {
@@ -284,15 +263,11 @@
             // Set the pivot point for this sprite to the center
             this.anchor.setTo(0.5, 0.5);
             
-            // Enable physics on the carrot
-            //this.game.physics.enable(this, Phaser.Physics.ARCADE);
-
             // Define constants that affect collision
             this.EAT_DISTANCE = 4; //pixels
+            this.CALORIE_COUNT = 24;
 
-            var colors = [
-                "0xE59400"
-            ];
+            var colors = ["0xE59400"];
             var rand = Math.floor(Math.random() * colors.length);
             this.color = colors[rand];
         };
@@ -388,7 +363,7 @@
             graphics.drawRect(this.x, this.y, 1, 1);
         };
 
-        var game = new Phaser.Game(416, 416, Phaser.AUTO, 'game');
+        var game = new Phaser.Game(208, 208, Phaser.AUTO, 'game');
         game.state.add('game', GameState, true);  
     };
     </script>
