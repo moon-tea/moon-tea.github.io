@@ -2,370 +2,46 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>hello phaser!</title>
+        <title> Wolf Sim 0.0.1 </title>
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
         <script src="bower_components/rot.js/rot.js"></script>
+        <!-- load libs -->
+        <!--script src="libs/phaser.min.js"></script-->
+
+        <!-- load game deps -->
+        <script src="utils/state_machine.js"></script>
+
+        <!-- data stuff -->
+        
+        <!-- load gameplay stuff -->
+        <script src="gameplay/states/idle.js"></script>
+        <script src="gameplay/states/moving.js"></script>
+        <script src="gameplay/states/action.js"></script>
+
+        <script src="gameplay/ai/action.js"></script>
+        <script src="gameplay/ai/agent.js"></script>
+        <!--  <script src="gameplay/ai/node.js"></script-->
+        <script src="gameplay/ai/planner.js"></script>
+
+        <!-- load actions -->
+        <!--  <script src="gameplay/actions/mineore.js"></script-->
+        <!--  <script src="gameplay/actions/deliverore.js"></script-->
+        <!--  <script src="gameplay/actions/gettool.js"></script-->
+        <!--  <script src="gameplay/actions/crafttool.js"></script-->
+        <!--  <script src="gameplay/actions/delivertool.js"></script-->
+        <!--  <script src="gameplay/actions/getore.js"></script-->
+        <script src="gameplay/actions/eatcarrot.js"></script>
+
+        <!-- load entities -->
+        <script src="gameplay/entities/den.js"></script>
+        <script src="gameplay/entities/carrot.js"></script>
+        <script src="gameplay/entities/rabbit.js"></script>
+
+        <!-- load game states -->
+        <script src="gameplay/game_state.js"></script>
+        
+        <!-- run game -->
+        <script src="app.js"></script>
     </head>
-    <body>
-
-    <script type="text/javascript">
-
-    window.onload = function() {
-        // This example uses the Phaser 2.2.2 framework
-        var GameState = function(game) {
-            this.MAX_RABBITS = 2; // number of rabbits
-            //this.MAX_RABBITS = 10; // number of rabbits
-            this.CARROTS_NEEDED = 50; // number of carrots
-            this.STARTING_RABBITS = 2; // number of rabbits
-            //TIME
-            var realTime = {
-                FRAMES_PER_SECOND: 60,
-                SECONDS_PER_MINUTE: 60,
-                MINUTES_PER_HOUR: 60,
-                HOURS_PER_DAY: 24,
-                DAYS_PER_SEASON: 91,
-                DAYS_PER_YEAR: 364, 
-                PIXELS_PER_FEET: 1,
-                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]
-            };
-
-            var bigTime = {
-                FRAMES_PER_SECOND: .01,
-                SECONDS_PER_MINUTE: 60, 
-                MINUTES_PER_HOUR: 60,
-                HOURS_PER_DAY: 24,
-                DAYS_PER_SEASON: 91,
-                DAYS_PER_YEAR: 364, 
-                PIXELS_PER_FEET: 1/120,
-                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]
-            };
-
-            var minecraftTime = {
-                FRAMES_PER_SECOND: 60,
-                SECONDS_PER_MINUTE: 16.6,
-                MINUTES_PER_HOUR: 6,
-                HOURS_PER_DAY: 4,
-                DAYS_PER_SEASON: 4,
-                DAYS_PER_YEAR: 16,
-                PIXELS_PER_FEET: 200,
-                SEASONS: ["SPRING", "SUMMER", "FALL", "WINTER"]     
-            };
-
-            //Set the time variable
-            this.time = bigTime;
-            this.FRAMES_PER_SECOND = this.time.FRAMES_PER_SECOND; 
-            this.SECONDS_PER_MINUTE = this.time.SECONDS_PER_MINUTE; 
-            this.MINUTES_PER_HOUR = this.time.MINUTES_PER_HOUR; 
-            this.HOURS_PER_DAY = this.time.HOURS_PER_DAY; 
-            this.DAYS_PER_SEASON = this.time.DAYS_PER_SEASON; 
-            this.DAYS_PER_YEAR = this.time.DAYS_PER_YEAR; 
-            this.PIXELS_PER_FEET = this.time.PIXELS_PER_FEET; 
-            this.SEASONS = this.time.SEASONS; 
-        };
-
-        // Load images and sounds
-        GameState.prototype.preload = function() {
-            //this.game.load.image('rocket', 'assets/gfx/rocket.png');
-            //this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
-        };
-
-        // Setup the example game
-        GameState.prototype.create = function() {
-            // Set stage background to something sky colored
-            this.game.stage.backgroundColor = "0x489030";
-            
-            // Create a group to hold the rabbit
-            this.rabbitGroup = this.game.add.group();
-
-            // Create a group to hold the carrots
-            this.carrotGroup = this.game.add.group();
-
-            // Create a group to hold the dens
-            this.rabbitDenGroup = this.game.add.group();
-
-            //time variables
-            this.frameCount = 0;
-            this.secondCount = 0;
-            this.minuteCount = 0;
-            this.hourCount = 0;
-            this.dayCount = 0;
-            this.yearCount = 0;
-            this.carrots_eaten = 0;
-            this.output = "";
-            this.text = game.add.text(20, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
-            
-            //set the game seed
-            ROT.RNG.setSeed(12345);
-        };
-
-        // The update() method is called every frame
-        GameState.prototype.update = function() {
-            //Every frame -- this number gets pretty big.
-            this.frameCount++;
-            this.text.destroy();
-            
-            //Putting this in a function is probably a good idea at some point
-            this.secondCount = Math.floor(this.frameCount / this.FRAMES_PER_SECOND);
-            this.minuteCount = Math.floor(this.secondCount / this.SECONDS_PER_MINUTE);
-            this.hourCount = Math.floor(this.minuteCount / this.MINUTES_PER_HOUR);
-            this.dayCount = Math.floor(this.hourCount / this.HOURS_PER_DAY);
-            this.yearCount = Math.floor(this.dayCount / this.DAYS_PER_YEAR);
-            this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
-                        
-            // If there are fewer than MAX_RABBITS, launch a new one
-            if (this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
-                //this.launchRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) / this.PIXELS_PER_FEET) );
-                this.launchRabbit(0, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
-            }
-            
-            this.output = "";
-            this.output += "game time-:"+this.yearCount+"y, "+this.dayCount+"d, "+this.hourCount+"h, "+this.minuteCount+"m, "+this.secondCount+"s";
-            this.output += "\nseason: " + this.season;
-            this.output += "\nmapsize: " + this.game.world.width/this.PIXELS_PER_FEET+"sqft";
-            this.output += "\ncarrots consumed: " + this.carrots_eaten;
-            var count = this.output.split("\n").length;
-            this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
-
-            this.rabbitGroup.forEachAlive(function(rabbit) {
-                rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-                console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
-                if(!rabbit.carrot) {
-                    var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
-                    var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
-                    //var spawnX = this.game.world.width-2;
-                    //var spawnY = this.game.world.centerY; 
-                    var c = this.spawnCarrot(spawnX, spawnY);
-                    rabbit.carrot = c;
-                    //rabbit.distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
-                    rabbit.targetX = rabbit.carrot.x;
-                    rabbit.targetY = rabbit.carrot.y;
-                } else {
-                    var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
-                    if (distance < rabbit.carrot.EAT_DISTANCE) {
-                        console.log("kill!");
-                        rabbit.carrot.kill();
-                        rabbit.calorieCountOfFoodInStomach += rabbit.carrot.CALORIE_COUNT;
-                        rabbit.carrot = null;
-                        this.carrots_eaten++;
-                    }
-                }
-            }, this);
-
-            //this.carrotGroup.forEachAlive(function(carrot) {
-            //
-            //}, this);
-        };
-
-        // Try to get a rabbit from the rabbitGroup
-        // If a rabbit isn't available, create a new one and add it to the group.
-        GameState.prototype.spawnCarrot = function(x, y) {
-            // // Get the first dead carrot from the carrotGroup
-            var carrot = this.carrotGroup.getFirstDead();
-
-            // If there aren't any available, create a new one
-            if (carrot === null) {
-                carrot = new Carrot(this.game);
-                this.carrotGroup.add(carrot);
-            }
-
-            // Revive the carrot (set it's alive property to true)
-            // You can also define a onRevived event handler in your carrot objects
-            // to do stuff when they are revived.
-            carrot.revive();
-
-            // Move the carrot to the given coordinates
-            carrot.x = x;
-            carrot.y = y;
-            carrot.claimed = false;
-
-            return carrot;
-        };
-
-         // Try to get a rabbit from the rabbitGroup
-        // If a rabbit isn't available, create a new one and add it to the group.
-        GameState.prototype.launchRabbit = function(x, y, FEET_PER_SECOND) {
-            // // Get the first dead rabbit from the rabbitGroup
-            var rabbit = this.rabbitGroup.getFirstDead();
-
-            // If there aren't any available, create a new one
-            if (rabbit === null) {
-                rabbit = new Rabbit(this.game);
-                this.rabbitGroup.add(rabbit);
-            }
-
-            // Revive the rabbit (set it's alive property to true)
-            // You can also define a onRevived event handler in your explosion objects
-            // to do stuff when they are revived.
-            rabbit.revive();
-
-            // Move the rabbit to the given coordinates
-            rabbit.x = x;
-            rabbit.y = y;
-            rabbit.distance = 100000;
-            rabbit.feetTraveled = 0;
-            //              walking speed of 4.4 feet per second
-            // multiplied by the time/pixels ration
-            rabbit.speed = 4.4 * FEET_PER_SECOND; //pixels per second
-
-            return rabbit;
-        };
-
-        // Rabbit constructor
-        var Rabbit = function(game, x, y) {
-            //Phaser.Sprite.call(this, game, x, y, 'rocket');
-            Phaser.Graphics.call(this, game, x, y);
-            this.graphics = game.add.graphics(0, 0);
-            window.graphics = this.graphics;
-                        
-            //game.context.fillRect(x, y, 4, 4);
-            // Set the pivot point for this sprite to the center
-            this.anchor.setTo(0.5, 0.5);
-            //this.tint = "0xFF0000";
-
-            // Enable physics on the rabbit
-            this.game.physics.enable(this, Phaser.Physics.ARCADE);
-
-            // Define constants that affect motion
-            //this.SPEED = 4.4; // 4.4 feet per second = 3mph
-            //this.SPEED = 7*5; // 125mph
-            this.TURN_RATE = 45;//15; // turn rate in degrees/frame
-            this.WOBBLE_LIMIT = 5; // degrees
-            this.WOBBLE_SPEED = 250; // milliseconds
-            this.AVOID_DISTANCE = 1; // pixels
-
-            var colors = ["0x926239", "0x967327", "0x90594a", "0xa5684a", "0x5b3d24", "0xd3c0af", "0xc8b09c", ];
-            var rand = Math.floor(ROT.RNG.getUniform() * colors.length);
-            this.color = colors[rand];
-            this.feetTraveled = 0; //feet
-            //start dietary needs
-            this.weight = 6; //lbs
-            this.poundsOfNonFat = 5; //lbs
-            this.poundsOfFat = this.weight - this.poundsOfNonFat; //lbs
-            this.calorieNeedsPerDay = 200; //cal
-            this.calorieCountOfFoodInStomach = 0; //cal
-            this.stomachCapacity = 400; //cal
-            this.digestionRatePerDay = 400; //cal
-
-            // Create a variable called wobble that tweens back and forth between
-            // -this.WOBBLE_LIMIT and +this.WOBBLE_LIMIT forever
-            this.wobble = this.WOBBLE_LIMIT;
-            this.game.add.tween(this).to(
-                { wobble: -this.WOBBLE_LIMIT }, this.WOBBLE_SPEED, Phaser.Easing.Sinusoidal.InOut, true, 0, Number.POSITIVE_INFINITY, true
-            );
-        };
-
-        var Carrot = function(game, x, y) {
-            //Phaser.Sprite.call(this, game, x, y, 'rocket');
-            Phaser.Graphics.call(this, game, x, y);
-            this.graphics = game.add.graphics(0, 0);
-            window.graphics = this.graphics;
-            
-            // Set the pivot point for this sprite to the center
-            this.anchor.setTo(0.5, 0.5);
-            
-            // Define constants that affect collision
-            this.EAT_DISTANCE = 4; //pixels
-            this.CALORIE_COUNT = 24;
-
-            var colors = ["0xE59400"];
-            var rand = Math.floor(Math.random() * colors.length);
-            this.color = colors[rand];
-        };
-
-        // Rabbits are a type of Phaser.Graphics
-        Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-        Rabbit.prototype.constructor = Rabbit;
-        // Carrots are a type of Phaser.Graphics
-        Carrot.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-        Carrot.prototype.constructor = Carrot;
-        
-        Carrot.prototype.update = function() {
-            // draw a rectangle
-            this.graphics.clear();
-            if(this.alive) {
-                graphics.lineStyle(1, this.color, 1);
-                graphics.drawRect(this.x, this.y, 1, 1);
-            }
-        };
-        
-        Rabbit.prototype.update = function() {
-            // Calculate the angle from the rabbit to the nearest carrot 
-            //substitute with whatever
-            // target coordinates you need.
-            var targetAngle = this.game.math.angleBetween(
-                this.x, this.y,
-                this.targetX, this.targetY
-            );
-
-            // Add our "wobble" factor to the targetAngle to make the rabbit wobble
-            // Remember that this.wobble is tweening (above)
-            targetAngle += this.game.math.degToRad(this.wobble);
-
-            // Make each rabbit steer away from other rabbits.
-            // Each rabbit knows the group that it belongs to (rabbitGroup).
-            // It can calculate its distance from all other rabbits in the group and
-            // steer away from any that are too close. This avoidance behavior prevents
-            // all of the rabbits from bunching up too tightly and following the
-            // same track.
-            var avoidAngle = 0;
-            this.parent.forEachAlive(function(m) {
-                // Don't calculate anything if the other rabbit is me
-                if (this == m) return;
-
-                // Already found an avoidAngle so skip the rest
-                if (avoidAngle !== 0) return;
-
-                // Calculate the distance between me and the other rabbit
-                var distance = this.game.math.distance(this.x, this.y, m.x, m.y);
-
-                // If the rabbit is too close...
-                if (distance < this.AVOID_DISTANCE) {
-                    // Chose an avoidance angle of 90 or -90 (in radians)
-                    avoidAngle = Math.PI/2; // zig
-                    //if (this.game.math.chanceRoll(50)) avoidAngle *= -1; // zag
-                    if (Phaser.Utils.chanceRoll(50)) avoidAngle *= -1; // zag
-                }
-            }, this);
-
-            // Add the avoidance angle to steer clear of other rabbits
-            targetAngle += avoidAngle;
-
-            // Gradually (this.TURN_RATE) aim the rabbit towards the target angle
-            if (this.rotation !== targetAngle) {
-                // Calculate difference between the current angle and targetAngle
-                var delta = targetAngle - this.rotation;
-
-                // Keep it in range from -180 to 180 to make the most efficient turns.
-                if (delta > Math.PI) delta -= Math.PI * 2;
-                if (delta < -Math.PI) delta += Math.PI * 2;
-
-                if (delta > 0) {
-                    // Turn clockwise
-                    this.angle += this.TURN_RATE;
-                } else {
-                    // Turn counter-clockwise
-                    this.angle -= this.TURN_RATE;
-                }
-
-                // Just set angle to target angle if they are close
-                if (Math.abs(delta) < this.game.math.degToRad(this.TURN_RATE)) {
-                    this.rotation = targetAngle;
-                }
-            }
-
-            // Calculate velocity vector based on this.rotation and this.SPEED
-            this.body.velocity.x = Math.cos(this.rotation) * this.speed;
-            this.body.velocity.y = Math.sin(this.rotation) * this.speed;
-
-            // draw a rectangle
-            this.graphics.clear();
-            graphics.lineStyle(1, this.color, 1);
-            graphics.drawRect(this.x, this.y, 1, 1);
-        };
-
-        var game = new Phaser.Game(208, 208, Phaser.AUTO, 'game');
-        game.state.add('game', GameState, true);  
-    };
-    </script>
-    </body>
+    <body></body>
 </html>

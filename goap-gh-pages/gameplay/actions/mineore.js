@@ -13,6 +13,7 @@ MineOreAction = function() {
 MineOreAction.prototype = Object.create(Action.prototype);
 
 MineOreAction.prototype.execute = function() {
+    console.log("mining:", this._mineCounter );
     this._mineCounter++;
 
     if(this._mineCounter >= 4) {
