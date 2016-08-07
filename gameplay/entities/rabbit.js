@@ -19,10 +19,10 @@ Rabbit = function(game, x, y) {
     // Define constants that affect motion
     //this.SPEED = 4.4; // 4.4 feet per second = 3mph
     //this.SPEED = 7*5; // 125mph
-    this.TURN_RATE = 45;//15; // turn rate in degrees/frame
+    this.TURN_RATE = 15;//15; // turn rate in degrees/frame
     this.WOBBLE_LIMIT = 5; // degrees
     this.WOBBLE_SPEED = 250; // milliseconds
-    this.AVOID_DISTANCE = 1; // pixels
+    this.AVOID_DISTANCE = 10; // pixels
 
     var colors = ["0x926239", "0x967327", "0x90594a", "0xa5684a", "0x5b3d24", "0xd3c0af", "0xc8b09c", ];
     var rand = Math.floor(ROT.RNG.getUniform() * colors.length);

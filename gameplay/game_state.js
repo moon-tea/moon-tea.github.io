@@ -1,8 +1,8 @@
 var GameState = function(game) {
-    this.MAX_RABBITS = 1; // number of rabbits
+    this.MAX_RABBITS = 25; // number of rabbits
     //this.MAX_RABBITS = 10; // number of rabbits
     this.CARROTS_NEEDED = 50; // number of carrots
-    this.STARTING_RABBITS = 1; // number of rabbits
+    this.STARTING_RABBITS = 25; // number of rabbits
     //TIME
     var realTime = {
         FRAMES_PER_SECOND: 60,
@@ -114,7 +114,7 @@ GameState.prototype.update = function() {
 
     this.rabbitGroup.forEachAlive(function(rabbit) {
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-        console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
+        //console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
         if(!rabbit.carrot) {
             var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
             var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
@@ -145,7 +145,7 @@ GameState.prototype.update = function() {
         } else {
             var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.den.x, rabbit.den.y);
             if (distance < rabbit.den.SAFE_DISTANCE) {
-                console.log("safe!");
+                //console.log("safe!");
             }
         }
     }, this);
