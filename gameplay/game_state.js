@@ -114,7 +114,7 @@ GameState.prototype.update = function() {
 
     this.rabbitGroup.forEachAlive(function(rabbit) {
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-        console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
+        //console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
         if(!rabbit.carrot) {
             var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
             var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
@@ -128,7 +128,7 @@ GameState.prototype.update = function() {
         } else {
             var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
             if (distance < rabbit.carrot.EAT_DISTANCE) {
-                console.log("kill!");
+                //console.log("kill!");
                 rabbit.carrot.kill();
                 rabbit.calorieCountOfFoodInStomach += rabbit.carrot.CALORIE_COUNT;
                 rabbit.carrot = null;
@@ -145,11 +145,10 @@ GameState.prototype.update = function() {
         } else {
             var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.den.x, rabbit.den.y);
             if (distance < rabbit.den.SAFE_DISTANCE) {
-                console.log("safe!");
+                //console.log("safe!");
             }
         }
     }, this);
-
     //this.carrotGroup.forEachAlive(function(carrot) {
     //
     //}, this);

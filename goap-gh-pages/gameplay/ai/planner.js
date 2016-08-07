@@ -4,7 +4,7 @@ var Planner = function() {
 
 Planner.prototype.plan = function(agent, goal) {
     var root = new Node(null, null, 0, agent.state);
-
+    console.log(root);
     var leaves = [];
 
     var found = this._buildGraph(root, leaves, agent.actions, goal);

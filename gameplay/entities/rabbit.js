@@ -1,9 +1,8 @@
 // Rabbit constructor
 Rabbit = function(game, x, y) {
-    this.agent = new Agent(this, "Rabbit");//Agent.call(this, "Rabbit");
-    console.log(this.agent);
-    console.log(this);
+    Agent.call(this, "Rabbit");
     //Phaser.Sprite.call(this, game, x, y, 'rocket');
+    console.log(this);
     Phaser.Graphics.call(this, game, x, y);
     this.graphics = game.add.graphics(0, 0);
     window.graphics = this.graphics;
@@ -47,10 +46,8 @@ Rabbit = function(game, x, y) {
     //AI
     this._current_plan = [];
     this._target = null;
-    this.agent.setState("calorieCount", 0);
-
-    this.agent.addAction(new EatCarrotAction());
-
+    this.setState("calorieCount", 0);
+    this.addAction(new EatCarrotAction());
 };
 
 Rabbit.prototype.plan = function() {
@@ -64,11 +61,13 @@ Rabbit.prototype.plan = function() {
     return plan;
 };
 
-Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-//Object.create(Agent.prototype);
+//Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
+Rabbit.prototype = Object.create(Agent.prototype);
 Rabbit.prototype.constructor = Rabbit;
 
 Rabbit.prototype.update = function() {
+    //Agent.prototype.update();
+    Agent.prototype.update.call(this);
     // Calculate the angle from the rabbit to the nearest carrot 
     //substitute with whatever
     // target coordinates you need.

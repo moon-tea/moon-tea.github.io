@@ -12,11 +12,10 @@ var Agent = function(name) {
     this.sm.add("action", new ActionState(this));
 
     this.sm.enter("idle");
-
-    return this; 
 };
 
 Agent.prototype = Object.create(Phaser.Graphics.prototype);
+Agent.prototype.constructor = Agent;
 
 Agent.prototype.update = function() {
     this.sm.update();

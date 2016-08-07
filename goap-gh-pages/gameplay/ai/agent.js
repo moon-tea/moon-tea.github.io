@@ -15,6 +15,7 @@ var Agent = function(name) {
 };
 
 Agent.prototype.update = function() {
+    console.log(this.name, "updating");
     this.sm.update();
 };
 
