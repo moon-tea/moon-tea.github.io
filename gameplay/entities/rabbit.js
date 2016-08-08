@@ -50,6 +50,10 @@ Rabbit = function(game, x, y) {
     this.addAction(new EatCarrotAction());
 };
 
+//Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
+Rabbit.prototype = Object.create(Agent.prototype);
+Rabbit.prototype.constructor = Rabbit;
+
 Rabbit.prototype.plan = function() {
     var planner = new Planner();
 
@@ -57,13 +61,9 @@ Rabbit.prototype.plan = function() {
         name: "calorieCount",
         value: this.calorieNeedsPerDay
     });
-
+    console.log(plan);
     return plan;
 };
-
-//Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-Rabbit.prototype = Object.create(Agent.prototype);
-Rabbit.prototype.constructor = Rabbit;
 
 Rabbit.prototype.update = function() {
     //Agent.prototype.update();
