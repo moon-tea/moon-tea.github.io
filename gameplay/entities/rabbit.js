@@ -49,7 +49,7 @@ Rabbit = function(game, x, y) {
     this._current_plan = [];
     this._target = null;
     this.setState("calorieCount", 0);
-    this.addAction(new EatCarrotAction());
+    this.addAction(new EatCarrotAction(this.calorieCountOfFoodInStomach));
 };
 
 //Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);

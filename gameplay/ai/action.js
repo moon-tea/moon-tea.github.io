@@ -11,6 +11,17 @@ Action.prototype.addEffect = function(name, value) {
     this.effects[name] = value;
 };
 
+/*
+Action.prototype.addIncrementalEffect = function(name, obj) {
+    //if initialized
+    if(this.effects[name]) {
+    	this.effects[name] += obj.value;	
+	} else {
+		this.effects[name] = 0;
+	}
+};
+*/
+
 Action.prototype.addPrecondition = function(name, value) {
     this.preconditions[name] = value;
 };
