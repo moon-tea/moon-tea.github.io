@@ -4,6 +4,7 @@ EatCarrotAction = function() {
     console.log(this);
     //this._mineCounter = 0;
     //this._position = positions.ore;
+    this._position = {x:150, y:150};
 
     //this.addPrecondition("HasTool", true);
     //this.addPrecondition("HasOre", false);

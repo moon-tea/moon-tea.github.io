@@ -5,6 +5,8 @@ Rabbit = function(game, x, y) {
     console.log(this);
     Phaser.Graphics.call(this, game, x, y);
     this.graphics = game.add.graphics(0, 0);
+    this._game = game;
+    this._sprite = this.graphics;
     window.graphics = this.graphics;
                 
     //game.context.fillRect(x, y, 4, 4);
@@ -23,15 +25,15 @@ Rabbit = function(game, x, y) {
     this.WOBBLE_SPEED = 250; // milliseconds
     this.AVOID_DISTANCE = 1; // pixels
 
-    var colors = ["0x926239", "0x967327", "0x90594a", "0xa5684a", "0x5b3d24", "0xd3c0af", "0xc8b09c", ];
-    var rand = Math.floor(ROT.RNG.getUniform() * colors.length);
+    var colors = ["0x50190a","0x926239", "0x967327", "0x90594a", "0xa5684a", "0x5b3d24", "0xd3c0af", "0xc8b09c", ];
+    var rand = 0;//Math.floor(ROT.RNG.getUniform() * colors.length);
     this.color = colors[rand];
     this.feetTraveled = 0; //feet
     //start dietary needs
     this.weight = 6; //lbs
     this.poundsOfNonFat = 5; //lbs
     this.poundsOfFat = this.weight - this.poundsOfNonFat; //lbs
-    this.calorieNeedsPerDay = 200; //cal
+    this.calorieNeedsPerDay = 23; //cal
     this.calorieCountOfFoodInStomach = 0; //cal
     this.stomachCapacity = 400; //cal
     this.digestionRatePerDay = 400; //cal
@@ -71,6 +73,7 @@ Rabbit.prototype.update = function() {
     // Calculate the angle from the rabbit to the nearest carrot 
     //substitute with whatever
     // target coordinates you need.
+    /*
     var targetAngle = this.game.math.angleBetween(
         this.x, this.y,
         this.targetX, this.targetY
@@ -135,7 +138,7 @@ Rabbit.prototype.update = function() {
     // Calculate velocity vector based on this.rotation and this.SPEED
     this.body.velocity.x = Math.cos(this.rotation) * this.speed;
     this.body.velocity.y = Math.sin(this.rotation) * this.speed;
-
+    */
     // draw a rectangle
     this.graphics.clear();
     graphics.lineStyle(1, this.color, 1);
