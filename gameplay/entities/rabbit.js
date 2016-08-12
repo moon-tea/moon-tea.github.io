@@ -33,7 +33,7 @@ Rabbit = function(game, x, y) {
     this.weight = 6; //lbs
     this.poundsOfNonFat = 5; //lbs
     this.poundsOfFat = this.weight - this.poundsOfNonFat; //lbs
-    this.calorieNeedsPerDay = 23; //cal
+    this.calorieNeedsPerDay = 50; //cal
     this.calorieCountOfFoodInStomach = 0; //cal
     this.stomachCapacity = 400; //cal
     this.digestionRatePerDay = 400; //cal
@@ -50,6 +50,8 @@ Rabbit = function(game, x, y) {
     this._target = null;
     this.setState("calorieCount", 0);
     this.addAction(new EatCarrotAction());
+    this.addAction(new EatCarrotAction(1));
+    this.addAction(new EatCarrotAction(2));
 };
 
 //Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
