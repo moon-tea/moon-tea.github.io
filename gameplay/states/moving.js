@@ -14,9 +14,7 @@ MovingState.prototype.leave = function() {
 };
 
 MovingState.prototype.update = function() {
-    console.log("moving");
     if(this._entity._target) {
-        console.log("moving2");
         var t =  this._entity._target;
         this._entity._game.physics.arcade.moveToXY(this._entity, t.x, t.y, 100);
 

@@ -4,9 +4,9 @@ EatCarrotAction = function(num) {
     console.log(this);
     //this._mineCounter = 0;
     //this._position = positions.ore;
-     var spawnX = Math.floor(ROT.RNG.getUniform()*(208-100) + 50);
-            var spawnY = Math.floor(ROT.RNG.getUniform()*(208-100) + 50);
-            this._position = {x:spawnX, y:spawnY};
+    var spawnX = Math.floor(ROT.RNG.getUniform()*(208-100) + 50);
+    var spawnY = Math.floor(ROT.RNG.getUniform()*(208-100) + 50);
+    this._position = {x:spawnX, y:spawnY};
 
     //this.addPrecondition("HasTool", true);
     //this.addPrecondition("HasOre", false);
@@ -17,6 +17,9 @@ EatCarrotAction.prototype = Object.create(Action.prototype);
 
 EatCarrotAction.prototype.execute = function() {
     console.log("eating carrot: "+this.name);
+    this.agent.removeAction(this);
+    //this.object.setState("calorieCount", 0);
+    //this.object.kill();
     //this._mineCounter++;
 
     //if(this._mineCounter >= 4) {

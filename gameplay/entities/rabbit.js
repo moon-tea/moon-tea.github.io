@@ -52,6 +52,7 @@ Rabbit = function(game, x, y) {
     this.addAction(new EatCarrotAction());
     this.addAction(new EatCarrotAction(1));
     this.addAction(new EatCarrotAction(2));
+    this.addAction(new EatCarrotAction(3));
 };
 
 //Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
@@ -71,7 +72,10 @@ Rabbit.prototype.plan = function() {
 
 Rabbit.prototype.update = function() {
     //Agent.prototype.update();
+    //console.log(this);
+    //console.log(Agent.prototype.update);
     Agent.prototype.update.call(this);
+
     // Calculate the angle from the rabbit to the nearest carrot 
     //substitute with whatever
     // target coordinates you need.
@@ -142,7 +146,7 @@ Rabbit.prototype.update = function() {
     this.body.velocity.y = Math.sin(this.rotation) * this.speed;
     */
     // draw a rectangle
-    this.graphics.clear();
-    graphics.lineStyle(1, this.color, 1);
-    graphics.drawRect(this.x, this.y, 1, 1);
+    //this.graphics.clear();
+    //graphics.lineStyle(1, this.color, 1);
+    //graphics.drawRect(this.x, this.y, 1, 1);
 };

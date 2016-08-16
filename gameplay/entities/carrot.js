@@ -1,4 +1,4 @@
-Carrot = function(game, x, y) {
+Carrot = function(game, id, x, y) {
     //Phaser.Sprite.call(this, game, x, y, 'rocket');
     Phaser.Graphics.call(this, game, x, y);
     this.graphics = game.add.graphics(0, 0);
@@ -14,6 +14,7 @@ Carrot = function(game, x, y) {
     var colors = ["0xE59400"];
     var rand = Math.floor(Math.random() * colors.length);
     this.color = colors[rand];
+    this.id = id;
 };
 
 // Rabbits are a type of Phaser.Graphics

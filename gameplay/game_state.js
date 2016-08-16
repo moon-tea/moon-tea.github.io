@@ -1,7 +1,7 @@
 var GameState = function(game) {
     this.MAX_RABBITS = 1; // number of rabbits
-    //this.MAX_RABBITS = 10; // number of rabbits
-    this.CARROTS_NEEDED = 50; // number of carrots
+    this.MAX_DENS = 3; // number of rabbits
+    this.MAX_CARROTS = 25; // number of carrots
     this.STARTING_RABBITS = 1; // number of rabbits
     //TIME
     var realTime = {
@@ -57,7 +57,10 @@ GameState.prototype.preload = function() {
 
 // Setup the example game
 GameState.prototype.create = function() {
-    // Set stage background to something sky colored
+    //set the game seed
+    ROT.RNG.setSeed(12345);
+    
+    // Set stage background to something grass
     this.game.stage.backgroundColor = "0x489030";
     
     // Create a group to hold the rabbit
@@ -80,15 +83,28 @@ GameState.prototype.create = function() {
     this.output = "";
     this.text = game.add.text(20, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
     
-    //set the game seed
-    ROT.RNG.setSeed(12345);
+    var spawn = {x:0, y:0};
+    while(this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
+        spawn = this.getRandomPos();
+        this.spawnRabbit(spawn.x, spawn.y, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
+    }
+
+    while(this.carrotGroup.countLiving() < this.MAX_CARROTS) {
+        spawn = this.getRandomPos();
+        this.spawnCarrot(spawn.x, spawn.y);
+    }
+
+    while(this.rabbitDenGroup.countLiving() < this.MAX_DENS) {
+        spawn = this.getRandomPos();
+        this.spawnDen(spawn.x, spawn.y);
+    }
 };
+
 
 // The update() method is called every frame
 GameState.prototype.update = function() {
     //Every frame -- this number gets pretty big.
     this.frameCount++;
-    this.text.destroy();
     
     //Putting this in a function is probably a good idea at some point
     this.secondCount = Math.floor(this.frameCount / this.FRAMES_PER_SECOND);
@@ -98,12 +114,15 @@ GameState.prototype.update = function() {
     this.yearCount = Math.floor(this.dayCount / this.DAYS_PER_YEAR);
     this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
                 
-    // If there are fewer than MAX_RABBITS, launch a new one
+    // If there are fewer than MAX_RABBITS, spawn a new one
     if (this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
-        //this.launchRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) / this.PIXELS_PER_FEET) );
-        this.launchRabbit(0, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
+        //this.spawnRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) / this.PIXELS_PER_FEET) );
+        //this.spawnRabbit(0, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
+        //
     }
-    
+
+    //destroy text
+    this.text.destroy();
     this.output = "";
     this.output += "game time-:"+this.yearCount+"y, "+this.dayCount+"d, "+this.hourCount+"h, "+this.minuteCount+"m, "+this.secondCount+"s";
     this.output += "\nseason: " + this.season;
@@ -115,6 +134,7 @@ GameState.prototype.update = function() {
     this.rabbitGroup.forEachAlive(function(rabbit) {
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
         //console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
+        /*
         if(!rabbit.carrot) {
             var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
             var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
@@ -148,9 +168,13 @@ GameState.prototype.update = function() {
                 //console.log("safe!");
             }
         }
+        */
     }, this);
+    
     //this.carrotGroup.forEachAlive(function(carrot) {
-    //
+    //    if(carrot.calorie_count <= 0) { 
+    //        carrot.kill();
+    //    }
     //}, this);
 };
 
@@ -162,7 +186,7 @@ GameState.prototype.spawnCarrot = function(x, y) {
 
     // If there aren't any available, create a new one
     if (carrot === null) {
-        carrot = new Carrot(this.game);
+        carrot = new Carrot(this.game, this.carrotGroup.countLiving());
         this.carrotGroup.add(carrot);
     }
 
@@ -204,7 +228,7 @@ GameState.prototype.spawnDen = function(x, y) {
 
  // Try to get a rabbit from the rabbitGroup
 // If a rabbit isn't available, create a new one and add it to the group.
-GameState.prototype.launchRabbit = function(x, y, FEET_PER_SECOND) {
+GameState.prototype.spawnRabbit = function(x, y, FEET_PER_SECOND) {
     // // Get the first dead rabbit from the rabbitGroup
     var rabbit = this.rabbitGroup.getFirstDead();
 
@@ -229,4 +253,10 @@ GameState.prototype.launchRabbit = function(x, y, FEET_PER_SECOND) {
     rabbit.speed = 1 * FEET_PER_SECOND; //pixels per second
 
     return rabbit;
+};
+
+GameState.prototype.getRandomPos = function() {
+    var _x = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-50) + 25);
+    var _y = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-50) + 25);
+    return {x:_x, y:_y};
 };
