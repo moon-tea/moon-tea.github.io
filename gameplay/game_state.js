@@ -1,7 +1,7 @@
 var GameState = function(game) {
     this.MAX_RABBITS = 1; // number of rabbits
-    this.MAX_DENS = 3; // number of rabbits
-    this.MAX_CARROTS = 25; // number of carrots
+    this.MAX_DENS = 1; // number of rabbits
+    this.MAX_CARROTS = 5; // number of carrots
     this.STARTING_RABBITS = 1; // number of rabbits
     //TIME
     var realTime = {
@@ -186,7 +186,7 @@ GameState.prototype.spawnCarrot = function(x, y) {
 
     // If there aren't any available, create a new one
     if (carrot === null) {
-        carrot = new Carrot(this.game, this.carrotGroup.countLiving());
+        carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
         this.carrotGroup.add(carrot);
     }
 
@@ -194,6 +194,17 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     carrot.revive();
+    console.log(carrot.advertisedActions);
+    //carrots advertise their actions
+    this.rabbitGroup.forEachAlive(function(rabbit) {
+        //for(var action in carrot.advertisedActions) {
+        for(var i = 0; i < carrot.advertisedActions.length; i++) {
+            //console.log(carrot.advertisedActions[i]);
+            rabbit.addAction(carrot.advertisedActions[i]);
+        }
+        //}
+        console.log(rabbit);
+    }, this);
 
     // Move the carrot to the given coordinates
     carrot.x = x;

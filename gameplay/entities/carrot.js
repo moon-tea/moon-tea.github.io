@@ -1,4 +1,5 @@
 Carrot = function(game, id, x, y) {
+    SmartObject.call(this, "Carrot"+id);
     //Phaser.Sprite.call(this, game, x, y, 'rocket');
     Phaser.Graphics.call(this, game, x, y);
     this.graphics = game.add.graphics(0, 0);
@@ -9,25 +10,15 @@ Carrot = function(game, id, x, y) {
     
     // Define constants that affect collision
     this.EAT_DISTANCE = 4; //pixels
-    this.CALORIE_COUNT = 24;
+    this.calorie_count = 24;
 
     var colors = ["0xE59400"];
     var rand = Math.floor(Math.random() * colors.length);
     this.color = colors[rand];
     this.id = id;
+    this.addAdvertisedAction(new EatCarrotAction(this.id, x, y));
 };
 
-// Rabbits are a type of Phaser.Graphics
-
-// Carrots are a type of Phaser.Graphics
-Carrot.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
+// Carrots are a type of SmartObject
+Carrot.prototype = Object.create(SmartObject.prototype);//Object.create(Phaser.Sprite.prototype);
 Carrot.prototype.constructor = Carrot;
-
-Carrot.prototype.update = function() {
-    // draw a rectangle
-    this.graphics.clear();
-    if(this.alive) {
-        graphics.lineStyle(1, this.color, 1);
-        graphics.drawRect(this.x, this.y, 1, 1);
-    }
-};

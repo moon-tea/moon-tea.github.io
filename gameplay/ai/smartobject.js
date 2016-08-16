@@ -19,8 +19,10 @@ SmartObject.prototype.update = function() {
     //console.log("sm update");
     this.sm.update();
     this.graphics.clear();
-    graphics.lineStyle(1, this.color, 1);
-    graphics.drawRect(this.x, this.y, 1, 1);
+    if(this.alive) {
+        graphics.lineStyle(1, this.color, 1);
+        graphics.drawRect(this.x, this.y, 1, 1);
+    }
 };
 
 SmartObject.prototype.addAdvertisedAction = function(action) {
@@ -37,12 +39,21 @@ SmartObject.prototype.getAdvertisedActions = function() {
 
 SmartObject.prototype.applyAction = function(action) {
     for(var effect in action.effects) {
-        this.setState(effect, action.effects[effect]);
+        if(typeof action.effects[effect] === 'number') {
+            this.incrementState(effect, action.effects[effect]);
+        } else {
+            this.setState(effect, action.effects[effect]);
+        }
     }
 }
 
 SmartObject.prototype.setState = function(name, value) {
     this.state[name] = value;
+};
+
+
+SmartObject.prototype.incrementState = function(name, value) {
+    this.state[name] = this.state[name] + value;
 };
 
 SmartObject.prototype.is = function(name, value) {
