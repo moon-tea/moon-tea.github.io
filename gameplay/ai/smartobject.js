@@ -7,16 +7,12 @@ var SmartObject = function(name) {
     this.sm = new StateMachine();
 
     //should obejcts have states? possibly. Not quite the same as the other states, though
-    //this.sm.add("idle", new IdleState(this));
-    //this.sm.add("action", new ActionState(this));
-    //this.sm.enter("idle");
 };
 
 SmartObject.prototype = Object.create(Phaser.Graphics.prototype);
 SmartObject.prototype.constructor = SmartObject;
 
 SmartObject.prototype.update = function() {
-    //console.log("sm update");
     this.sm.update();
     this.graphics.clear();
     if(this.alive) {

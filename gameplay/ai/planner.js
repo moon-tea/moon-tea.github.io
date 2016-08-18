@@ -8,7 +8,7 @@ Planner.prototype.plan = function(agent, goal) {
     var leaves = [];
 
     var found = this._buildGraph(root, leaves, agent.actions, goal);
-    console.log(goal);
+
     var cheapest = leaves.sort(function(a, b) {
         return a.cost < b.cost;
     })[0];
@@ -24,8 +24,6 @@ Planner.prototype.plan = function(agent, goal) {
 
         node = node.parent;
     }
-
-    console.log(plan);
 
     return plan;
 };
@@ -101,7 +99,7 @@ Planner.prototype._iterateState = function(old, newState) {
     }
 
     for(var effect in newState) {
-        console.log("iterate", result[effect], newState[effect] );
+        //console.log("iterate", result[effect], newState[effect] );
         if(typeof newState[effect] === 'number') {
            result[effect] += newState[effect];
         } else {

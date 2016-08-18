@@ -1,5 +1,5 @@
 var GameState = function(game) {
-    this.MAX_RABBITS = 1; // number of rabbits
+    this.MAX_RABBITS = 2; // number of rabbits
     this.MAX_DENS = 1; // number of rabbits
     this.MAX_CARROTS = 5; // number of carrots
     this.STARTING_RABBITS = 1; // number of rabbits
@@ -131,45 +131,9 @@ GameState.prototype.update = function() {
     var count = this.output.split("\n").length;
     this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
-    this.rabbitGroup.forEachAlive(function(rabbit) {
-        rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-        //console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
-        /*
-        if(!rabbit.carrot) {
-            var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
-            var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
-            //var spawnX = this.game.world.width-2;
-            //var spawnY = this.game.world.centerY; 
-            var c = this.spawnCarrot(spawnX, spawnY);
-            rabbit.carrot = c;
-            //rabbit.distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
-            rabbit.targetX = rabbit.carrot.x;
-            rabbit.targetY = rabbit.carrot.y;
-        } else {
-            var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.carrot.x, rabbit.carrot.y);
-            if (distance < rabbit.carrot.EAT_DISTANCE) {
-                //console.log("kill!");
-                rabbit.carrot.kill();
-                rabbit.calorieCountOfFoodInStomach += rabbit.carrot.CALORIE_COUNT;
-                rabbit.carrot = null;
-                this.carrots_eaten++;
-            }
-        }
-        if(!rabbit.den) {
-            var spawnX = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-100) + 50);
-            var spawnY = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-100) + 50);
-            //var spawnX = this.game.world.width-2;
-            //var spawnY = this.game.world.centerY; 
-            var d = this.spawnDen(spawnX, spawnY);
-            rabbit.den = d;
-        } else {
-            var distance = this.game.math.distance(rabbit.x, rabbit.y, rabbit.den.x, rabbit.den.y);
-            if (distance < rabbit.den.SAFE_DISTANCE) {
-                //console.log("safe!");
-            }
-        }
-        */
-    }, this);
+    //this.rabbitGroup.forEachAlive(function(rabbit) {
+    //    rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
+    //}, this);
     
     //this.carrotGroup.forEachAlive(function(carrot) {
     //    if(carrot.calorie_count <= 0) { 
