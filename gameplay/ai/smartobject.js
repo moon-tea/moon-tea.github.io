@@ -16,8 +16,8 @@ SmartObject.prototype.update = function() {
     this.sm.update();
     this.graphics.clear();
     if(this.alive) {
-        graphics.lineStyle(1, this.color, 1);
-        graphics.drawRect(this.x, this.y, 1, 1);
+        this.graphics.lineStyle(1, this.color, 1);
+        this.graphics.drawRect(this.x, this.y, 1, 1);
     }
 };
 
