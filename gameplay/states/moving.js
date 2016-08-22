@@ -103,7 +103,7 @@ MovingState.prototype.update = function() {
         if(dist <= 4) {
             entity.body.moves = false;
             entity._target = null;
-            entity.sm.enter("action");
+            entity.agent.sm.enter("action");
         }
     }
 };

@@ -1,4 +1,4 @@
-var Agent = function(name) {
+Agent = function(name) {
     this.name = name;
     this.actions = [];
     //this.currentActions = [];

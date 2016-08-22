@@ -11,10 +11,10 @@ IdleState.prototype.leave = function() {
 };
 
 IdleState.prototype.update = function() {
-    //console.log("update idle");
+    console.log("update idle");
     var plan = this._entity.plan();
     if(plan.length > 0) {
         this._entity._current_plan = plan;
-        this._entity.sm.enter("moving");
+        this._entity.agent.sm.enter("moving");
     }
 };

@@ -9,16 +9,16 @@ var SmartObject = function(name) {
     //should obejcts have states? possibly. Not quite the same as the other states, though
 };
 
-SmartObject.prototype = Object.create(Phaser.Graphics.prototype);
+//SmartObject.prototype = {};//Object.create({});//Phaser.Graphics.prototype);
 SmartObject.prototype.constructor = SmartObject;
 
 SmartObject.prototype.update = function() {
-    this.sm.update();
-    this.graphics.clear();
-    if(this.alive) {
-        graphics.lineStyle(1, this.color, 1);
-        graphics.drawRect(this.x, this.y, 1, 1);
-    }
+    //this.sm.update();
+    //this.graphics.clear();
+    //if(this.alive) {
+    //    graphics.lineStyle(1, this.color, 1);
+    //    graphics.drawRect(this.x, this.y, 1, 1);
+    //}
 };
 
 SmartObject.prototype.addAdvertisedAction = function(action) {
@@ -33,6 +33,7 @@ SmartObject.prototype.getAdvertisedActions = function() {
     });
 };
 
+/*
 SmartObject.prototype.applyAction = function(action) {
     for(var effect in action.effects) {
         if(typeof action.effects[effect] === 'number') {
@@ -55,3 +56,4 @@ SmartObject.prototype.incrementState = function(name, value) {
 SmartObject.prototype.is = function(name, value) {
     return this.state[name] == value;
 };
+*/

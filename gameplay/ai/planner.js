@@ -3,6 +3,7 @@ var Planner = function() {
 };
 
 Planner.prototype.plan = function(agent, goal) {
+    console.log(agent);
     var root = new Node(null, null, 0, agent.state);
 
     var leaves = [];

@@ -158,16 +158,16 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     carrot.revive();
-    console.log(carrot.advertisedActions);
+    console.log(carrot.smartObject.advertisedActions);
     //carrots advertise their actions
     this.rabbitGroup.forEachAlive(function(rabbit) {
         //for(var action in carrot.advertisedActions) {
-        for(var i = 0; i < carrot.advertisedActions.length; i++) {
+        for(var i = 0; i < carrot.smartObject.advertisedActions.length; i++) {
             //console.log(carrot.advertisedActions[i]);
-            rabbit.addAction(carrot.advertisedActions[i]);
+            rabbit.agent.addAction(carrot.smartObject.advertisedActions[i]);
         }
         //}
-        console.log(rabbit);
+        //console.log(rabbit);
     }, this);
 
     // Move the carrot to the given coordinates

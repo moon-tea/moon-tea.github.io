@@ -1,17 +1,17 @@
 // Rabbit constructor
 Rabbit = function(game, x, y) {
-    Agent.call(this, "Rabbit");
+    GraphicsObject.call(this, game, x ,y);// "Rabbit");
     //Phaser.Sprite.call(this, game, x, y, 'rocket');
     console.log(this);
-    Phaser.Graphics.call(this, game, x, y);
-    this.graphics = game.add.graphics(0, 0);
+    //Phaser.Graphics.call(this, game, x, y);
+    //this.graphics = game.add.graphics(0, 0);
     this._game = game;
     this._sprite = this.graphics;
-    window.graphics = this.graphics;
+    //window.graphics = this.graphics;
                 
     //game.context.fillRect(x, y, 4, 4);
     // Set the pivot point for this sprite to the center
-    this.anchor.setTo(0.5, 0.5);
+    //this.anchor.setTo(0.5, 0.5);
     //this.tint = "0xFF0000";
 
     // Enable physics on the rabbit
@@ -48,17 +48,33 @@ Rabbit = function(game, x, y) {
     //AI
     this._current_plan = [];
     this._target = null;
-    this.setState("calorieCount", 0);
+    this.agent = new Agent(this, "Rabbit");
+    this.agent.setState("calorieCount", 0);
+    //is this the righr way to do this?
+    var that = this;
+    /*
+    this.agent.plan = function() {
+        var planner = new Planner();
+
+        var plan = planner.plan(that.agent, {
+            name: "calorieCount",
+            value: that.calorieNeedsPerDay
+        });
+        console.log(plan);
+        return plan;
+    };
+    */
 };
 
 //Rabbit.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-Rabbit.prototype = Object.create(Agent.prototype);
+Rabbit.prototype = Object.create(GraphicsObject.prototype);
 Rabbit.prototype.constructor = Rabbit;
+
 
 Rabbit.prototype.plan = function() {
     var planner = new Planner();
 
-    var plan = planner.plan(this, {
+    var plan = planner.plan(this.agent, {
         name: "calorieCount",
         value: this.calorieNeedsPerDay
     });
@@ -66,11 +82,13 @@ Rabbit.prototype.plan = function() {
     return plan;
 };
 
+
 Rabbit.prototype.update = function() {
     //Agent.prototype.update();
     //console.log(this);
     //console.log(Agent.prototype.update);
-    Agent.prototype.update.call(this);
+    //Agent.prototype.update.call(this);
+    this.agent.update();
     //console.log(this);
 
     // Calculate the angle from the rabbit to the nearest carrot 
