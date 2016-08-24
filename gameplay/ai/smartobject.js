@@ -1,4 +1,5 @@
-var SmartObject = function(name) {
+var SmartObject = function(parent, name) {
+    this.parent = parent;
     this.name = name;
     this.advertisedActions = [];
 

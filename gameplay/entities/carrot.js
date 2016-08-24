@@ -9,7 +9,7 @@ Carrot = function(game, id, x, y) {
     // Set the pivot point for this sprite to the center
     //this.anchor.setTo(0.5, 0.5);
     
-    this.smartObject = new SmartObject("Carrot"+id);
+    this.smartObject = new SmartObject(this, "Carrot"+id);
 
     // Define constants that affect collision
     this.EAT_DISTANCE = 4; //pixels
@@ -29,7 +29,6 @@ Carrot.prototype = Object.create(GraphicsObject.prototype);
 Carrot.prototype.constructor = Carrot;
 
 Carrot.prototype.update = function() {
-    console.log(this);
-    GraphicsObject.prototype.update().call(this);
-    this.smartObject.update();
+    GraphicsObject.prototype.update(this);
+    this.smartObject.update(this.smartObject);
 };

@@ -90,6 +90,7 @@ GameState.prototype.create = function() {
     }
 
     while(this.carrotGroup.countLiving() < this.MAX_CARROTS) {
+        console.log("x");
         spawn = this.getRandomPos();
         this.spawnCarrot(spawn.x, spawn.y);
     }
@@ -131,9 +132,9 @@ GameState.prototype.update = function() {
     var count = this.output.split("\n").length;
     this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
-    //this.rabbitGroup.forEachAlive(function(rabbit) {
-    //    rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-    //}, this);
+    this.rabbitGroup.forEachAlive(function(rabbit) {
+        rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
+    }, this);
     
     //this.carrotGroup.forEachAlive(function(carrot) {
     //    if(carrot.calorie_count <= 0) { 

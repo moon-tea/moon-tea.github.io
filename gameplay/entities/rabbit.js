@@ -70,7 +70,6 @@ Rabbit = function(game, x, y) {
 Rabbit.prototype = Object.create(GraphicsObject.prototype);
 Rabbit.prototype.constructor = Rabbit;
 
-
 Rabbit.prototype.plan = function() {
     var planner = new Planner();
 
@@ -88,6 +87,7 @@ Rabbit.prototype.update = function() {
     //console.log(this);
     //console.log(Agent.prototype.update);
     //Agent.prototype.update.call(this);
+    GraphicsObject.prototype.update(this);
     this.agent.update();
     //console.log(this);
 
