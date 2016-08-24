@@ -1,3 +1,29 @@
+var SmartObjectMaker = {
+    SmartObject: function() {
+        return {
+            //parent: parent,
+            name: name,
+            advertisedActions: [],
+
+            state: {},
+
+            sm: new StateMachine(),
+            
+            addAdvertisedAction: function(action) {
+                action.object = this;
+                this.advertisedActions.push(action);
+            },   
+
+            getAdvertisedActions: function() {
+                // get all actions with cleared preconditions
+                return this.advertisedActions.filter(function(action) {
+                    return action.canExecute();
+                });
+            }
+        }
+    }
+};
+/*
 var SmartObject = function(parent, name) {
     this.parent = parent;
     this.name = name;
@@ -33,6 +59,7 @@ SmartObject.prototype.getAdvertisedActions = function() {
         return action.canExecute();
     });
 };
+*/
 
 /*
 SmartObject.prototype.applyAction = function(action) {

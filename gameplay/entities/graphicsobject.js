@@ -1,4 +1,4 @@
-var GraphicsObject = function(game, x, y) {
+GraphicsObject = function(game, x, y) {
     this.color = "0x000000";
     Phaser.Graphics.call(this, game, x, y);
     this.graphics = game.add.graphics(0, 0);
@@ -13,13 +13,14 @@ var GraphicsObject = function(game, x, y) {
 GraphicsObject.prototype = Object.create(Phaser.Graphics.prototype);
 GraphicsObject.prototype.constructor = GraphicsObject;
 
-GraphicsObject.prototype.update = function(one) {
-    one.graphics.clear();
+GraphicsObject.prototype.update = function() {
+    //console.log(this);
+    this.graphics.clear();
     //console.log(one.name);
     //draw pixel representation
-    if(one.alive) {
+    if(this.alive) {
         //console.log(one);
-        one.graphics.lineStyle(1, one.color, 1);
-        one.graphics.drawRect(one.x, one.y, 1, 1);
+        this.graphics.lineStyle(1, this.color, 1);
+        this.graphics.drawRect(this.x, this.y, 1, 1);
     }
 };

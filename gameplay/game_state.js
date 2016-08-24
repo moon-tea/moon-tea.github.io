@@ -1,8 +1,8 @@
 var GameState = function(game) {
-    this.MAX_RABBITS = 2; // number of rabbits
+    this.MAX_RABBITS = 0; // number of rabbits
     this.MAX_DENS = 1; // number of rabbits
-    this.MAX_CARROTS = 5; // number of carrots
-    this.STARTING_RABBITS = 1; // number of rabbits
+    this.MAX_CARROTS = 4; // number of carrots
+    this.STARTING_RABBITS = 0; // number of rabbits
     //TIME
     var realTime = {
         FRAMES_PER_SECOND: 60,
@@ -151,7 +151,10 @@ GameState.prototype.spawnCarrot = function(x, y) {
 
     // If there aren't any available, create a new one
     if (carrot === null) {
-        carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        console.log(CarrotMaker);
+        carrot = CarrotMaker.Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        console.log(carrot);
         this.carrotGroup.add(carrot);
     }
 
@@ -159,13 +162,14 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     carrot.revive();
-    console.log(carrot.smartObject.advertisedActions);
+    console.log(carrot.advertisedActions);
+    //console.log(SmartObject.advertisedActions);
     //carrots advertise their actions
     this.rabbitGroup.forEachAlive(function(rabbit) {
         //for(var action in carrot.advertisedActions) {
-        for(var i = 0; i < carrot.smartObject.advertisedActions.length; i++) {
+        for(var i = 0; i < carrot.advertisedActions.length; i++) {
             //console.log(carrot.advertisedActions[i]);
-            rabbit.agent.addAction(carrot.smartObject.advertisedActions[i]);
+            rabbit.agent.addAction(carrot.advertisedActions[i]);
         }
         //}
         //console.log(rabbit);
