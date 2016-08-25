@@ -15,6 +15,6 @@ IdleState.prototype.update = function() {
     var plan = this._entity.plan();
     if(plan.length > 0) {
         this._entity._current_plan = plan;
-        this._entity.agent.sm.enter("moving");
+        this._entity.sm.enter("moving");
     }
 };

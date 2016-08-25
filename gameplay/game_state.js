@@ -1,8 +1,8 @@
 var GameState = function(game) {
-    this.MAX_RABBITS = 0; // number of rabbits
+    this.MAX_RABBITS = 2; // number of rabbits
     this.MAX_DENS = 1; // number of rabbits
     this.MAX_CARROTS = 4; // number of carrots
-    this.STARTING_RABBITS = 0; // number of rabbits
+    this.STARTING_RABBITS = 1; // number of rabbits
     //TIME
     var realTime = {
         FRAMES_PER_SECOND: 60,
@@ -58,7 +58,7 @@ GameState.prototype.preload = function() {
 // Setup the example game
 GameState.prototype.create = function() {
     //set the game seed
-    ROT.RNG.setSeed(12345);
+    ROT.RNG.setSeed(1234);
     
     // Set stage background to something grass
     this.game.stage.backgroundColor = "0x489030";
@@ -134,6 +134,7 @@ GameState.prototype.update = function() {
 
     this.rabbitGroup.forEachAlive(function(rabbit) {
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
+        rabbit.updateState();
     }, this);
     
     //this.carrotGroup.forEachAlive(function(carrot) {
@@ -169,7 +170,7 @@ GameState.prototype.spawnCarrot = function(x, y) {
         //for(var action in carrot.advertisedActions) {
         for(var i = 0; i < carrot.advertisedActions.length; i++) {
             //console.log(carrot.advertisedActions[i]);
-            rabbit.agent.addAction(carrot.advertisedActions[i]);
+            rabbit.addAction(carrot.advertisedActions[i]);
         }
         //}
         //console.log(rabbit);
@@ -214,7 +215,10 @@ GameState.prototype.spawnRabbit = function(x, y, FEET_PER_SECOND) {
 
     // If there aren't any available, create a new one
     if (rabbit === null) {
-        rabbit = new Rabbit(this.game);
+        //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        console.log(RabbitMaker);
+        rabbit = RabbitMaker.Rabbit(this.game, x, y);
+        console.log(rabbit);
         this.rabbitGroup.add(rabbit);
     }
 

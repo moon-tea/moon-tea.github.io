@@ -15,5 +15,5 @@ EatCarrotAction.prototype.execute = function() {
         agent.removeAction(that);
     });
     console.log(this);
-    this.object.parent.kill();
+    this.object.kill();
 }

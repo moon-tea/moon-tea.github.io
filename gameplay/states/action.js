@@ -31,16 +31,16 @@ ActionState.prototype.update = function() {
                 // wait, apply and move to the next one (if there is one)
                 setTimeout(function() {
                     action.execute(); // execute action, might break tools or something like this
-                    that._entity.agent.applyAction(action);
+                    that._entity.applyAction(action);
 
                     that._waiting = false;
                     that._last_action = null;
                     that._timeout_set = false;
 
                     if(that._entity._current_plan.length > 0) {
-                        that._entity.agent.sm.enter("moving");
+                        that._entity.sm.enter("moving");
                     } else {
-                        that._entity.agent.sm.enter("idle");
+                        that._entity.sm.enter("idle");
                     }
                 }, 500 * cost); // 1 cost = 0.5s
             }
