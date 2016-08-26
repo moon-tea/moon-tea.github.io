@@ -2,7 +2,7 @@ EatCarrotAction = function(id, x, y) {
     Action.call(this, "EatCarrot"+id, 4);
 
     this._position = {x:x, y:y};
-    this.addEffect("calorieCount", 23);
+    this.addEffect("calorieCountOfFoodInStomach", 23);
 };
 
 EatCarrotAction.prototype = Object.create(Action.prototype);

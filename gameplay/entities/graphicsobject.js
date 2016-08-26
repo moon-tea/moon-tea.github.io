@@ -3,6 +3,7 @@ GraphicsObject = function(game, x, y) {
     //call to parent function
     Phaser.Graphics.call(this, game, x, y);
     
+    this.visible = true;
     this.x = x;
     this.y = y;
     this.color = "0x000000"; //default color in hex "black"

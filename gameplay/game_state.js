@@ -1,7 +1,7 @@
 var GameState = function(game) {
-    this.MAX_RABBITS = 2; // number of rabbits
+    this.MAX_RABBITS = 1; // number of rabbits
     this.MAX_DENS = 1; // number of rabbits
-    this.MAX_CARROTS = 4; // number of carrots
+    this.MAX_CARROTS = 20; // number of carrots
     this.STARTING_RABBITS = 1; // number of rabbits
     //TIME
     var realTime = {
@@ -190,7 +190,7 @@ GameState.prototype.spawnDen = function(x, y) {
 
     // If there aren't any available, create a new one
     if (den === null) {
-        den = new Den(this.game);
+        den = DenMaker.Den(this.game, this.rabbitDenGroup.countLiving(), x, y);
         this.rabbitDenGroup.add(den);
     }
 

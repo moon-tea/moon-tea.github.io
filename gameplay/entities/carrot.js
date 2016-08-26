@@ -17,6 +17,6 @@ var CarrotMaker = {
 
         //we do a post processing step to add an action to the item
         carrot.addAdvertisedAction(new EatCarrotAction(id, x, y));
-        return carot;
+        return carrot;
     }
 };
