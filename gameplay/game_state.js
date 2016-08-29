@@ -58,7 +58,7 @@ GameState.prototype.preload = function() {
 // Setup the example game
 GameState.prototype.create = function() {
     //set the game seed
-    ROT.RNG.setSeed(1234);
+    ROT.RNG.setSeed(123);
     
     // Set stage background to something grass
     this.game.stage.backgroundColor = "0x489030";
@@ -90,7 +90,7 @@ GameState.prototype.create = function() {
     }
 
     while(this.carrotGroup.countLiving() < this.MAX_CARROTS) {
-        console.log("x");
+        //console.log("x");
         spawn = this.getRandomPos();
         this.spawnCarrot(spawn.x, spawn.y);
     }
@@ -153,9 +153,9 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // If there aren't any available, create a new one
     if (carrot === null) {
         //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
-        console.log(CarrotMaker);
+        //console.log(CarrotMaker);
         carrot = CarrotMaker.Carrot(this.game, this.carrotGroup.countLiving(), x, y);
-        console.log(carrot);
+        //console.log(carrot);
         this.carrotGroup.add(carrot);
     }
 
@@ -163,7 +163,7 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     carrot.revive();
-    console.log(carrot.advertisedActions);
+    //console.log(carrot.advertisedActions);
     //console.log(SmartObject.advertisedActions);
     //carrots advertise their actions
     this.rabbitGroup.forEachAlive(function(rabbit) {
@@ -216,9 +216,9 @@ GameState.prototype.spawnRabbit = function(x, y, FEET_PER_SECOND) {
     // If there aren't any available, create a new one
     if (rabbit === null) {
         //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
-        console.log(RabbitMaker);
+        //console.log(RabbitMaker);
         rabbit = RabbitMaker.Rabbit(this.game, x, y);
-        console.log(rabbit);
+        //console.log(rabbit);
         this.rabbitGroup.add(rabbit);
     }
 

@@ -116,7 +116,7 @@ var RabbitMaker = {
                         name: "calorieCountOfFoodInStomach",
                         value: this.basalMetabolicRate
                     });
-                    console.log(plan);
+                    //console.log(plan);
                     return plan;
                 }
             }

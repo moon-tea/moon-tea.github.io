@@ -3,16 +3,25 @@ var Planner = function() {
 };
 
 Planner.prototype.plan = function(agent, goal) {
-    console.log(agent);
+    //console.log(agent);
     var root = new Node(null, null, 0, agent.state);
 
     var leaves = [];
 
-    var found = this._buildGraph(root, leaves, agent.actions, goal);
-
-    var cheapest = leaves.sort(function(a, b) {
-        return a.cost < b.cost;
-    })[0];
+    var found = this._buildGraph(root, leaves, agent, agent.actions, goal);
+    //console.log(leaves);
+    var sortedLeaves = leaves.sort(function(a, b) {
+        if (a.cost < b.cost) {
+            return -1;
+        }
+        if (a.cost > b.cost) {
+            return 1;
+        }
+        return 0;
+    });
+    //console.log(sortedLeaves);
+    var cheapest = sortedLeaves[0];
+    //console.log(cheapest);
 
     var plan = [];
 
@@ -29,7 +38,7 @@ Planner.prototype.plan = function(agent, goal) {
     return plan;
 };
 
-Planner.prototype._buildGraph = function(parent, leaves, actions, goal, depth) {
+Planner.prototype._buildGraph = function(parent, leaves, agent, actions, goal, depth) {
     depth = (typeof depth !== 'undefined') ? depth : -1;  
     var foundOne = false;
 
@@ -45,7 +54,16 @@ Planner.prototype._buildGraph = function(parent, leaves, actions, goal, depth) {
                 currentState = that._iterateState(parent.state, action.effects);
             }
 
-            var node = new Node(parent, action, parent.cost + action.cost, currentState);
+            //do a calculation to figure out the cost.
+            var baseCost = parent.cost + action.cost; //time itll take do it
+            if(parent.action){
+                //console.log(agent, parent.action, action);
+                //console.log()
+            }
+            var distCost = Phaser.Math.distance(agent.x, agent.y, action._position.x, action._position.y);;
+            var cost = baseCost + distCost;
+            //console.log(cost);
+            var node = new Node(parent, action, cost, currentState);
 
             if(currentState[goal.name] == goal.value || ( typeof currentState[goal.name] === 'number' && currentState[goal.name] > goal.value)) {
                 leaves.push(node);
@@ -56,7 +74,7 @@ Planner.prototype._buildGraph = function(parent, leaves, actions, goal, depth) {
                 var subset = actions.slice(0, index).concat(actions.slice(index + 1, actions.length));
                 //var subset = actions;//.slice(0, index).concat(actions.slice(index + 1, actions.length));
 
-                var found = that._buildGraph(node, leaves, subset, goal, depth);
+                var found = that._buildGraph(node, leaves, agent, subset, goal, depth);
 
                 if(found) {
                     foundOne = true;
