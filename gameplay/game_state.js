@@ -19,7 +19,7 @@ var GameState = function(game) {
         FRAMES_PER_SECOND: 1/32,
         SECONDS_PER_MINUTE: 60, 
         MINUTES_PER_HOUR: 60,
-        HOURS_PER_DAY: 24,
+        HOURS_PER_DAY: 8,
         DAYS_PER_SEASON: 91,
         DAYS_PER_YEAR: 364, 
         PIXELS_PER_FEET: 1/32,
@@ -58,7 +58,7 @@ GameState.prototype.preload = function() {
 // Setup the example game
 GameState.prototype.create = function() {
     //set the game seed
-    ROT.RNG.setSeed(123);
+    ROT.RNG.setSeed(1234);
     
     // Set stage background to something grass
     this.game.stage.backgroundColor = "0x489030";
@@ -134,7 +134,8 @@ GameState.prototype.update = function() {
 
     this.rabbitGroup.forEachAlive(function(rabbit) {
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
-        rabbit.updateState();
+        rabbit.updateStateMachine();
+        rabbit.updateState(this.dayCount);
     }, this);
     
     //this.carrotGroup.forEachAlive(function(carrot) {
@@ -198,6 +199,16 @@ GameState.prototype.spawnDen = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     den.revive();
+
+    this.rabbitGroup.forEachAlive(function(rabbit) {
+        //for(var action in carrot.advertisedActions) {
+        for(var i = 0; i < den.advertisedActions.length; i++) {
+            //console.log(carrot.advertisedActions[i]);
+            rabbit.addAction(den.advertisedActions[i]);
+        }
+        //}
+        //console.log(rabbit);
+    }, this);
 
     // Move the carrot to the given coordinates
     den.x = x;

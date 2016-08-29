@@ -67,7 +67,7 @@ var RabbitMaker = {
                 //start sleeping/energy needs
                 energyMax: 100,
                 energyMin: -100,
-                currentEnergy: 100,
+                currentEnergy: 0,
                 get energyNormal() { return this.currentEnergy; },
                 newEnergyNormal: function(plusEnergy) { return this.currentEnergy+plusEnergy; },
                 basalEnergyBurnPerDay: 100,
@@ -106,6 +106,16 @@ var RabbitMaker = {
                     return diff;
                 },
 
+                updateState: function(day) {
+                    if(day < rabbit.state.daysAlive) {
+                        console.log(day, rabbit.state.daysAlive);
+                        rabbit.setState("calorieCountOfFoodInStomach", 0);
+                        rabbit.setState("currentEnergy", 0);
+                        rabbit.state.daysAlive++;
+                        rabbit.plan();
+                    }
+                },
+
                 //AI
                 _current_plan: [],
                 _target: null,
@@ -113,10 +123,10 @@ var RabbitMaker = {
                     var planner = new Planner();
 
                     var plan = planner.plan(this, {
-                        name: "calorieCountOfFoodInStomach",
-                        value: this.basalMetabolicRate
+                        //calorieCountOfFoodInStomach: this.basalMetabolicRate,
+                        //currentEnergy: 80
                     });
-                    //console.log(plan);
+                    console.log(plan);
                     return plan;
                 }
             }
@@ -124,7 +134,9 @@ var RabbitMaker = {
         //Object.assign(rabbit, AgentMaker.Agent("phil"));
         rabbit._game = game;
         rabbit._sprite = rabbit.graphics;
-        rabbit.setState("calorieCount", 0);
+        rabbit.setState("calorieCountOfFoodInStomach", 0);
+        rabbit.setState("currentEnergy", 0);
+        rabbit.setState("daysAlive", 0);
         rabbit.game.physics.enable(rabbit, Phaser.Physics.ARCADE);
 
         rabbit.game.add.tween(rabbit).to(

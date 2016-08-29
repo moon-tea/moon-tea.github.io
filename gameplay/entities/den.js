@@ -9,7 +9,7 @@ var DenMaker = {
             SmartObjectMaker.SmartObject(), // a smart Object so that this object may advertise actions
             {                               // this is our state as a carrot. We could pass this in, or calculate it more
                 SAFE_DISTANCE: 4, //pixels
-                energy_count: 100, 
+                energy_count: 80, 
                 id: id,
                 color: colors[rand] //hex       
             }

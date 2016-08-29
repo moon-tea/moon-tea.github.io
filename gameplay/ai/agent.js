@@ -8,7 +8,7 @@ var AgentMaker = {
             state: {},
             sm: new StateMachine(),
             
-            updateState: function() {
+            updateStateMachine: function() {
                 //console.log(this.sm)
                 this.sm.update();
             },
@@ -33,6 +33,7 @@ var AgentMaker = {
                 for(var effect in action.effects) {
                     if (typeof action.effects[effect] === 'number') {
                         this.incrementState(effect, action.effects[effect]);
+                        console.log(this);
                     } else {
                         this.setState(effect, action.effects[effect]);
                     }
