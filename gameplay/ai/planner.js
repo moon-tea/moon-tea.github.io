@@ -63,8 +63,6 @@ Planner.prototype._buildGraph = function(parent, leaves, agent, actions, goal, d
             //console.log(cost);
             var node = new Node(parent, action, cost, currentState);
 
-             var node = new Node(parent, action, cost, currentState);
-
             for (var name in goal) {
                 if(currentState[name] == goal[name].value || ( typeof currentState[name] === 'number' && currentState[name] >= goal[name])) {
                     leaves.push(node);
@@ -74,7 +72,7 @@ Planner.prototype._buildGraph = function(parent, leaves, agent, actions, goal, d
 
                     var subset = actions.slice(0, index).concat(actions.slice(index + 1, actions.length));
                     //var subset = actions;//.slice(0, index).concat(actions.slice(index + 1, actions.length));
-                    if(depth < 7) {
+                    if(depth < 2) {
                         var found = that._buildGraph(node, leaves, agent, subset, goal, depth);
                     }
 
