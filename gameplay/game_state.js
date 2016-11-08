@@ -115,8 +115,8 @@ GameState.prototype.update = function() {
         //
     }
 
-    this.timeSinceLastCarrot++;
-    console.log(this.timeSinceLastCarrot);
+    //this.timeSinceLastCarrot++;
+    //console.log(this.timeSinceLastCarrot);
     if (this.timeSinceLastCarrot > 360) {//this.season == SPRING {
         this.timeSinceLastCarrot = 0;
         spawn = this.getRandomPos();
@@ -126,10 +126,11 @@ GameState.prototype.update = function() {
     //destroy text
     this.text.destroy();
     this.output = "";
-    this.output += "game time-:"+this.worldTime.yearCount+"y, "+this.worldTime.dayCount+"d, "+this.worldTime.hourCount+"h, "+this.worldTime.minuteCount+"m, "+this.worldTime.secondCount+"s";
-    this.output += "\nseason: " + this.worldTime.season;
-    this.output += "\nmapsize: " + this.game.world.width/this.worldTime.PIXELS_PER_FEET+"sqft";
+    this.output += "game time:"+this.worldTime.yearCount+"y, "+this.worldTime.dayCount+"d, "+this.worldTime.hourCount+"h, "+this.worldTime.minuteCount+"m, "+this.worldTime.secondCount+"s";
+    //this.output += "\nseason: " + this.worldTime.season;
+    //this.output += "\nmapsize: " + this.game.world.width/this.worldTime.PIXELS_PER_FEET+"sqft";
     this.output += "\ncarrots consumed: " + this.carrots_eaten;
+    //this.output += "\ncarrots consumed: " + this.carrots_eaten;
     var count = this.output.split("\n").length;
     this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 

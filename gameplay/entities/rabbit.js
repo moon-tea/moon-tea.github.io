@@ -108,7 +108,7 @@ var RabbitMaker = {
                 },
 
                 updateState: function(time) {
-                    console.log(rabbit.state.calorieCountOfFoodInStomach, rabbit.state.currentEnergy);
+                    //console.log(rabbit.state.calorieCountOfFoodInStomach, rabbit.state.currentEnergy);
                     if(rabbit.state.calorieCountOfFoodInStomach > 0) {
                         rabbit.state.calorieCountOfFoodInStomach -= rabbit.calorieDecay(time);
                     } else if (rabbit.state.currrentCaloriesOfFat > 0) {
