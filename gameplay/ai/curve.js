@@ -78,3 +78,8 @@ functionPlot({
   }]
 });
 console.log(lin.getPlot(0.55));
+//$( "#w" ).on( "change", function() {
+//  console.log($( this ).val()); 
+//  lin = CurveMaker.Curve('linear', $( this ).val(), 1.0, 0.25, 0.0 ); 
+//  functionPlot(myObj); 
+// });
