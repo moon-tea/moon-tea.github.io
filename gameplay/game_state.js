@@ -45,7 +45,49 @@ var GameState = function(game) {
 GameState.prototype.preload = function() {
     //this.game.load.image('rocket', 'assets/gfx/rocket.png');
     //this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
-};
+    
+    var myObj = { 
+      getObj: function() {
+        return {
+          target: '#graph',
+          disableZoom: true,
+          xAxis: {
+            label: 'x - axis',
+            domain: [0, 1]
+          },
+          yAxis: {
+            label: 'y - axis',
+            domain: [0, 1]
+          },
+          width: 400,
+          height: 400,
+          data: [{
+            graphType: 'polyline',
+            fn: function(scope){
+              //return makeCurve(scope.x,'linear', 0.5, 1.0, 0.25, 0.0);
+              return lin.getPlot(scope.x);
+            }
+          },
+          {
+            graphType: 'polyline',
+            fn: function (scope) {
+              return log.getPlot(scope.x);//makeCurve(scope.x,'logistic',50,-0.95,1.0,0.6);//1/Math.pow(base, x);
+            },
+            //fn: '2^(x)',//makeCurve('logistic',50,-0.95,1.0,0.6 ),
+            //fnType: 'parametric',
+            range: [0,1]
+          }]
+        }
+      }
+  }
+      $( "#m" ).keyup( function() {
+      console.log("boop");
+      console.log($( this ).val()); 
+      lin = CurveMaker.Curve('linear', $( this ).val(), 1.0, 0.25, 0.0 );
+      functionPlot(myObj.getObj()); 
+     });
+    functionPlot(myObj.getObj());
+}
 
 // Setup the example game
 GameState.prototype.create = function() {

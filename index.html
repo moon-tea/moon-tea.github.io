@@ -3,9 +3,17 @@
     <head>
         <meta charset="UTF-8" />
         <title> Wolf Sim 0.0.1 </title>
+
+        <!-- load libs -->
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
         <script src="bower_components/rot.js/rot.js"></script>
-        <!-- load libs -->
+        <!--
+        <script src="bower_components/d3/d3.min.js"></script>
+  <script src="http://maurizzzio.github.io/function-plot/js/function-plot.js"></script>
+        -->
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="bower_components/function-plot/dist/function-plot.js"></script>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <!--script src="libs/phaser.min.js"></script-->
 
         <!-- load game deps -->
@@ -43,8 +51,22 @@
         <!-- load game states -->
         <script src="gameplay/game_state.js"></script>
         
+        <!-- load curve -->
+        <script src="gameplay/ai/curve.js"></script>
+
         <!-- run game -->
+        
         <script src="app.js"></script>
+        
     </head>
-    <body></body>
+    <body>
+        <div id="game"></div>
+        <div id="graph"></div>
+        <label for="m">m</label><input id="m" type="text"></input>
+        <!--
+        <label for="k">k</label><input id="k" type="text"></input>
+        <label for="b">b</label><input id="b" type="text"></input>
+        <label for="c">c</label><input id="c" type="text"></input>
+        -->
+    </body>
 </html>
