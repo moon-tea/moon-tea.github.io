@@ -63,13 +63,15 @@ BouncingCritter.prototype.act = function(view) {
 };
 
 function elementFromChar(legend, ch) {
-  console.log(ch);
+  //console.log(ch);
   if (ch == " ")
     return null;
-  console.log(legend, legend[ch], legend[ch]["factory"]);
+  //console.log(legend, legend[ch], legend[ch]["factory"]);
   var element = new legend[ch]["factory"]();
   element.originChar = ch;
   element.babyChar = legend[ch].babyChar;
+  element.adultChar = legend[ch].adultChar;
+  element.grownUp = false;
   return element;
 }
 
@@ -263,6 +265,12 @@ actionTypes.reproduce = function(critter, vector, action) {
   return true;
 };
 
+actionTypes.growUp = function(critter) {
+  console.log("grew up!")
+  critter.originChar = critter.adultChar;
+  critter.grownUp = true;
+}
+
 function Plant() {
   this.energy = 3 + Math.random() * 4;
 }
@@ -315,6 +323,8 @@ function SmartPlantEater() {
 
 SmartPlantEater.prototype.act = function(view) {
   var space = view.find(" ");
+  if (this.energy > 60 && !this.grownUp)
+    return {type: "growUp"};
   if (this.energy > 90 && space)
     return {type: "reproduce", direction: space};
   var plants = view.findAll('"');
@@ -354,7 +364,7 @@ Tiger.prototype.act = function(view) {
   var seenPerTurn = this.preySeen.reduce(function(a, b) {
     return a + b;
   }, 0) / this.preySeen.length;
-  var prey = view.findAll("R");
+  var prey = view.findAll("R").concat(view.findAll("r"));
   this.preySeen.push(prey.length);
   // Drop the first element from the array when it is longer than 6
   if (this.preySeen.length > 6)
@@ -365,6 +375,8 @@ Tiger.prototype.act = function(view) {
     return {type: "eat", direction: randomElement(prey)};
     
   var space = view.find(" ");
+  if (this.energy > 300 && !this.grownUp)
+    return {type: "growUp"};
   if (this.energy > 400 && space)
     return {type: "reproduce", direction: space};
   if (view.look(this.direction) != " " && space)
@@ -375,28 +387,28 @@ Tiger.prototype.act = function(view) {
 var tigerValley = new LifelikeWorld(
   ['####################################################',
    '#                 ####         """"              ###',
-   '#   "  W  ##                 ########       RR    ##',
-   '#   "    ##        R R                 """"       "#',
+   '#   "  w  ##                 ########       rr    ##',
+   '#   "    ##        r r                 """"       "#',
    '#       ##"                        ##########     "#',
    '#      ##"""  "         """"                     ""#',
    '#" ""  #  "  """      #########                  ""#',
    '#" ""  #      "               #   "              ""#',
-   '#     ##              #   R   #  """          ######',
-   '#"            W       #       #   "        R  #    #',
+   '#     ##              #   r   #  """          ######',
+   '#"            w       #       #   "        r  #    #',
    '#"                    #  ######                 "" #',
    '###          """"          """                  "" #',
-   '#       R                        W         R       #',
+   '#       r                        w         r       #',
    '#   "     ##  ##  ##  ##               ###      "  #',
-   '#   ""         #              "       #####  R     #',
-   '##  ""  R   R  #  #    """  """        ###      "" #',
+   '#   ""         #              "       #####  r     #',
+   '##  ""  r   r  #  #    """  """        ###      "" #',
    '###               #   """""                    """"#',
    '####################################################'],
   { 
     "#": { "factory": Wall },
-    "W": { "factory": Tiger, "babyChar": "w" },
-    "w": { "factory": Tiger, "babyChar": "w" },
-    "R": { "factory": SmartPlantEater, "babyChar": "r" }, 
-    "r": { "factory": SmartPlantEater, "babyChar": "r" }, 
+    "W": { "factory": Tiger, "babyChar": "w", "adultChar": "W" },
+    "w": { "factory": Tiger, "babyChar": "w", "adultChar": "W" },
+    "R": { "factory": SmartPlantEater, "babyChar": "r", "adultChar": "R" }, 
+    "r": { "factory": SmartPlantEater, "babyChar": "r", "adultChar": "R" }, 
     '"': { "factory": Plant, "babyChar": '"'}
   }
 );
