@@ -1,7 +1,83 @@
 <!doctype html>
-<script src="code/chapter/07_elife.js"></script>
-<script src="code/animateworld.js"></script>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title> Wolf Sim 0.0.2 </title>
+        <!-- load libs -->
+        <!--
+        <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <script src="bower_components/rot.js/rot.js"></script>
+        <script src="bower_components/d3/d3.min.js"></script>
+  		<script src="http://maurizzzio.github.io/function-plot/js/function-plot.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="bower_components/function-plot/dist/function-plot.js"></script>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        script src="libs/phaser.min.js"></script>
+        -->
 
-<body><script>
-animateWorld(tigerValley);
-</script></body>
+        <!-- load game deps -->
+        <!--
+        <script src="utils/state_machine.js"></script>
+        -->
+
+        <!-- data stuff -->
+        
+        <!-- load gameplay stuff -->
+        <!--
+        <script src="gameplay/states/idle.js"></script>
+        <script src="gameplay/states/moving.js"></script>
+        <script src="gameplay/states/action.js"></script>
+
+        <script src="gameplay/ai/action.js"></script>
+        <script src="gameplay/ai/smartobject.js"></script>
+        <script src="gameplay/ai/agent.js"></script>
+        <script src="gameplay/ai/node.js"></script>
+        <script src="gameplay/ai/planner.js"></script>
+        -->
+        <script src="code/chapter/07_elife.js"></script>
+        <script src="code/animateworld.js"></script>
+
+        <!-- load actions -->
+        <!--  <script src="gameplay/actions/mineore.js"></script-->
+        <!--  <script src="gameplay/actions/deliverore.js"></script-->
+        <!--  <script src="gameplay/actions/gettool.js"></script-->
+        <!--  <script src="gameplay/actions/crafttool.js"></script-->
+        <!--  <script src="gameplay/actions/delivertool.js"></script-->
+        <!--  <script src="gameplay/actions/getore.js"></script-->
+        <!--
+        <script src="gameplay/actions/sleepaction.js"></script>
+        <script src="gameplay/actions/eatcarrot.js"></script>
+		-->
+        <!-- load entities -->
+        <!--
+        <script src="gameplay/entities/graphicsobject.js"></script>
+        <script src="gameplay/entities/den.js"></script>
+        <script src="gameplay/entities/carrot.js"></script>
+        <script src="gameplay/entities/rabbit.js"></script>
+		-->
+        <!-- load game states -->
+        <!--
+        <script src="gameplay/game_state.js"></script>
+        -->
+        <!-- load curve -->
+        <!--
+        <script src="gameplay/ai/curve.js"></script>
+		-->
+        <!-- run game -->
+        <!--<script src="app.js"></script>-->
+        
+    </head>
+    <body>
+    	<script>
+			animateWorld(valley);
+		</script>
+        <div id="game"></div>
+        <div id="graph"></div>
+        <label for="m">m</label><input id="m" type="text"></input>
+        <!--
+        <label for="k">k</label><input id="k" type="text"></input>
+        <label for="b">b</label><input id="b" type="text"></input>
+        <label for="c">c</label><input id="c" type="text"></input>
+        -->
+    </body>
+</html>
