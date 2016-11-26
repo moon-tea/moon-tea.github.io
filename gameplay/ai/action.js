@@ -1,6 +1,7 @@
 var Action = function(name, cost) {
     this.name = name;
-    this.agent = undefined;
+    this.agents = [];//undefined;
+    this.object = undefined;
     this.effects = {};
     this.preconditions = {};
 

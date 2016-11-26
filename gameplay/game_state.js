@@ -1,8 +1,15 @@
 var GameState = function(game) {
+<<<<<<< HEAD
     this.MAX_RABBITS = 25; // number of rabbits
     //this.MAX_RABBITS = 10; // number of rabbits
     this.CARROTS_NEEDED = 50; // number of carrots
     this.STARTING_RABBITS = 25; // number of rabbits
+=======
+    this.MAX_RABBITS = 1; // number of rabbits
+    this.MAX_DENS = 2; // number of rabbits
+    this.MAX_CARROTS = 8; // number of carrots
+    this.STARTING_RABBITS = 1; // number of rabbits
+>>>>>>> 938d70f6964c2495965684064c3108c7c9bdaa28
     //TIME
     var realTime = {
         FRAMES_PER_SECOND: 60,
@@ -19,7 +26,7 @@ var GameState = function(game) {
         FRAMES_PER_SECOND: 1/32,
         SECONDS_PER_MINUTE: 60, 
         MINUTES_PER_HOUR: 60,
-        HOURS_PER_DAY: 24,
+        HOURS_PER_DAY: 8,
         DAYS_PER_SEASON: 91,
         DAYS_PER_YEAR: 364, 
         PIXELS_PER_FEET: 1/32,
@@ -38,26 +45,63 @@ var GameState = function(game) {
     };
 
     //Set the time variable
-    this.time = bigTime;
-    this.FRAMES_PER_SECOND = this.time.FRAMES_PER_SECOND; 
-    this.SECONDS_PER_MINUTE = this.time.SECONDS_PER_MINUTE; 
-    this.MINUTES_PER_HOUR = this.time.MINUTES_PER_HOUR; 
-    this.HOURS_PER_DAY = this.time.HOURS_PER_DAY; 
-    this.DAYS_PER_SEASON = this.time.DAYS_PER_SEASON; 
-    this.DAYS_PER_YEAR = this.time.DAYS_PER_YEAR; 
-    this.PIXELS_PER_FEET = this.time.PIXELS_PER_FEET; 
-    this.SEASONS = this.time.SEASONS; 
+    this.worldTime = bigTime;
 };
 
 // Load images and sounds
 GameState.prototype.preload = function() {
     //this.game.load.image('rocket', 'assets/gfx/rocket.png');
     //this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 128, 128);
-};
+    
+    var myObj = { 
+      getObj: function() {
+        return {
+          target: '#graph',
+          disableZoom: true,
+          xAxis: {
+            label: 'x - axis',
+            domain: [0, 1]
+          },
+          yAxis: {
+            label: 'y - axis',
+            domain: [0, 1]
+          },
+          width: 400,
+          height: 400,
+          data: [{
+            graphType: 'polyline',
+            fn: function(scope){
+              //return makeCurve(scope.x,'linear', 0.5, 1.0, 0.25, 0.0);
+              return lin.getPlot(scope.x);
+            }
+          },
+          {
+            graphType: 'polyline',
+            fn: function (scope) {
+              return log.getPlot(scope.x);//makeCurve(scope.x,'logistic',50,-0.95,1.0,0.6);//1/Math.pow(base, x);
+            },
+            //fn: '2^(x)',//makeCurve('logistic',50,-0.95,1.0,0.6 ),
+            //fnType: 'parametric',
+            range: [0,1]
+          }]
+        }
+      }
+  }
+      $( "#m" ).keyup( function() {
+      console.log("boop");
+      console.log($( this ).val()); 
+      lin = CurveMaker.Curve('linear', $( this ).val(), 1.0, 0.25, 0.0 );
+      functionPlot(myObj.getObj()); 
+     });
+    functionPlot(myObj.getObj());
+}
 
 // Setup the example game
 GameState.prototype.create = function() {
-    // Set stage background to something sky colored
+    //set the game seed
+    ROT.RNG.setSeed(12344);
+    
+    // Set stage background to something grass
     this.game.stage.backgroundColor = "0x489030";
     
     // Create a group to hold the rabbit
@@ -70,49 +114,77 @@ GameState.prototype.create = function() {
     this.rabbitDenGroup = this.game.add.group();
 
     //time variables
-    this.frameCount = 0;
-    this.secondCount = 0;
-    this.minuteCount = 0;
-    this.hourCount = 0;
-    this.dayCount = 0;
-    this.yearCount = 0;
+    this.worldTime.frameCount = 0;
+    this.worldTime.secondCount = 0;
+    this.worldTime.minuteCount = 0;
+    this.worldTime.hourCount = 0;
+    this.worldTime.dayCount = 0;
+    this.worldTime.yearCount = 0;
     this.carrots_eaten = 0;
     this.output = "";
     this.text = game.add.text(20, game.world.height-20, this.output, { font: "12px Arial", fill: "#000000", align: "left" });
     
-    //set the game seed
-    ROT.RNG.setSeed(12345);
+    var spawn = {x:0, y:0};
+    while(this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
+        spawn = this.getRandomPos();
+        this.spawnRabbit(spawn.x, spawn.y, ((60 / this.worldTime.FRAMES_PER_SECOND ) * this.worldTime.PIXELS_PER_FEET) );
+    }
+
+    while(this.carrotGroup.countLiving() < this.MAX_CARROTS) {
+        //console.log("x");
+        spawn = this.getRandomPos();
+        this.spawnCarrot(spawn.x, spawn.y);
+    }
+    this.timeSinceLastCarrot = 0;
+
+    while(this.rabbitDenGroup.countLiving() < this.MAX_DENS) {
+        spawn = this.getRandomPos();
+        this.spawnDen(spawn.x, spawn.y);
+    }
 };
+
 
 // The update() method is called every frame
 GameState.prototype.update = function() {
     //Every frame -- this number gets pretty big.
-    this.frameCount++;
-    this.text.destroy();
+    this.worldTime.frameCount++;
     
     //Putting this in a function is probably a good idea at some point
-    this.secondCount = Math.floor(this.frameCount / this.FRAMES_PER_SECOND);
-    this.minuteCount = Math.floor(this.secondCount / this.SECONDS_PER_MINUTE);
-    this.hourCount = Math.floor(this.minuteCount / this.MINUTES_PER_HOUR);
-    this.dayCount = Math.floor(this.hourCount / this.HOURS_PER_DAY);
-    this.yearCount = Math.floor(this.dayCount / this.DAYS_PER_YEAR);
-    this.season = this.SEASONS[Math.floor(( this.dayCount % (this.DAYS_PER_SEASON * this.SEASONS.length) / this.DAYS_PER_SEASON ))]
+    this.worldTime.secondCount = Math.floor(this.worldTime.frameCount / this.worldTime.FRAMES_PER_SECOND);
+    this.worldTime.minuteCount = Math.floor(this.worldTime.secondCount / this.worldTime.SECONDS_PER_MINUTE);
+    this.worldTime.hourCount = Math.floor(this.worldTime.minuteCount / this.worldTime.MINUTES_PER_HOUR);
+    this.worldTime.dayCount = Math.floor(this.worldTime.hourCount / this.worldTime.HOURS_PER_DAY);
+    this.worldTime.yearCount = Math.floor(this.worldTime.dayCount / this.worldTime.DAYS_PER_YEAR);
+    this.worldTime.season = this.worldTime.SEASONS[Math.floor(( this.worldTime.dayCount % (this.worldTime.DAYS_PER_SEASON * this.worldTime.SEASONS.length) / this.worldTime.DAYS_PER_SEASON ))]
                 
-    // If there are fewer than MAX_RABBITS, launch a new one
+    // If there are fewer than MAX_RABBITS, spawn a new one
     if (this.rabbitGroup.countLiving() < this.MAX_RABBITS) {
-        //this.launchRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) / this.PIXELS_PER_FEET) );
-        this.launchRabbit(0, this.game.world.centerY, ((60 / this.FRAMES_PER_SECOND ) * this.PIXELS_PER_FEET) );
+        //this.spawnRabbit(this.game.world.centerX, this.game.world.centerY, ((60 / this.worldTime.FRAMES_PER_SECOND ) / this.worldTime.PIXELS_PER_FEET) );
+        //this.spawnRabbit(0, this.game.world.centerY, ((60 / this.worldTime.FRAMES_PER_SECOND ) * this.worldTime.PIXELS_PER_FEET) );
+        //
     }
-    
+
+    //this.timeSinceLastCarrot++;
+    //console.log(this.timeSinceLastCarrot);
+    if (this.timeSinceLastCarrot > 360) {//this.season == SPRING {
+        this.timeSinceLastCarrot = 0;
+        spawn = this.getRandomPos();
+        this.spawnCarrot(spawn.x, spawn.y);
+    }
+
+    //destroy text
+    this.text.destroy();
     this.output = "";
-    this.output += "game time-:"+this.yearCount+"y, "+this.dayCount+"d, "+this.hourCount+"h, "+this.minuteCount+"m, "+this.secondCount+"s";
-    this.output += "\nseason: " + this.season;
-    this.output += "\nmapsize: " + this.game.world.width/this.PIXELS_PER_FEET+"sqft";
+    this.output += "game time:"+this.worldTime.yearCount+"y, "+this.worldTime.dayCount+"d, "+this.worldTime.hourCount+"h, "+this.worldTime.minuteCount+"m, "+this.worldTime.secondCount+"s";
+    //this.output += "\nseason: " + this.worldTime.season;
+    //this.output += "\nmapsize: " + this.game.world.width/this.worldTime.PIXELS_PER_FEET+"sqft";
     this.output += "\ncarrots consumed: " + this.carrots_eaten;
+    //this.output += "\ncarrots consumed: " + this.carrots_eaten;
     var count = this.output.split("\n").length;
     this.text = game.add.text(5, game.world.height-(count*20), this.output, { font: "12px Arial", fill: "#000000", align: "left" });
 
     this.rabbitGroup.forEachAlive(function(rabbit) {
+<<<<<<< HEAD
         rabbit.feetTraveled += rabbit.speed/60/this.PIXELS_PER_FEET;
         //console.log(rabbit.calorieCountOfFoodInStomach, Math.floor(rabbit.speed), Math.floor(rabbit.feetTraveled/5280), (rabbit.feetTraveled / this.secondCount), (rabbit.feetTraveled/5280/(this.minuteCount/60)));
         if(!rabbit.carrot) {
@@ -148,10 +220,18 @@ GameState.prototype.update = function() {
                 //console.log("safe!");
             }
         }
+=======
+        rabbit.feetTraveled += rabbit.speed/60/this.worldTime.PIXELS_PER_FEET;
+        rabbit.updateStateMachine();
+        rabbit.updateState(this.worldTime);
+        //console.log(rabbit.speed)
+>>>>>>> 938d70f6964c2495965684064c3108c7c9bdaa28
     }, this);
-
+    
     //this.carrotGroup.forEachAlive(function(carrot) {
-    //
+    //    if(carrot.calorie_count <= 0) { 
+    //        carrot.kill();
+    //    }
     //}, this);
 };
 
@@ -163,7 +243,10 @@ GameState.prototype.spawnCarrot = function(x, y) {
 
     // If there aren't any available, create a new one
     if (carrot === null) {
-        carrot = new Carrot(this.game);
+        //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        //console.log(CarrotMaker);
+        carrot = CarrotMaker.Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        //console.log(carrot);
         this.carrotGroup.add(carrot);
     }
 
@@ -171,6 +254,23 @@ GameState.prototype.spawnCarrot = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     carrot.revive();
+    //console.log(carrot.advertisedActions);
+    //console.log(SmartObject.advertisedActions);
+    //carrots advertise their actions
+    for(var i = 0; i < carrot.advertisedActions.length; i++) {
+            //console.log(carrot.advertisedActions[i]);
+        carrot.advertisedActions[i]._position={x:x,y:y};
+    }
+    this.rabbitGroup.forEachAlive(function(rabbit) {
+        //for(var action in carrot.advertisedActions) {
+        for(var i = 0; i < carrot.advertisedActions.length; i++) {
+            //console.log(carrot.advertisedActions[i]);
+            
+            rabbit.addAction(carrot.advertisedActions[i]);
+        }
+        //}
+        //console.log(rabbit);
+    }, this);
 
     // Move the carrot to the given coordinates
     carrot.x = x;
@@ -186,7 +286,7 @@ GameState.prototype.spawnDen = function(x, y) {
 
     // If there aren't any available, create a new one
     if (den === null) {
-        den = new Den(this.game);
+        den = DenMaker.Den(this.game, this.rabbitDenGroup.countLiving(), x, y);
         this.rabbitDenGroup.add(den);
     }
 
@@ -194,6 +294,16 @@ GameState.prototype.spawnDen = function(x, y) {
     // You can also define a onRevived event handler in your carrot objects
     // to do stuff when they are revived.
     den.revive();
+
+    this.rabbitGroup.forEachAlive(function(rabbit) {
+        //for(var action in carrot.advertisedActions) {
+        for(var i = 0; i < den.advertisedActions.length; i++) {
+            //console.log(carrot.advertisedActions[i]);
+            rabbit.addAction(den.advertisedActions[i]);
+        }
+        //}
+        //console.log(rabbit);
+    }, this);
 
     // Move the carrot to the given coordinates
     den.x = x;
@@ -205,13 +315,16 @@ GameState.prototype.spawnDen = function(x, y) {
 
  // Try to get a rabbit from the rabbitGroup
 // If a rabbit isn't available, create a new one and add it to the group.
-GameState.prototype.launchRabbit = function(x, y, FEET_PER_SECOND) {
+GameState.prototype.spawnRabbit = function(x, y, FEET_PER_SECOND) {
     // // Get the first dead rabbit from the rabbitGroup
     var rabbit = this.rabbitGroup.getFirstDead();
 
     // If there aren't any available, create a new one
     if (rabbit === null) {
-        rabbit = new Rabbit(this.game);
+        //carrot = new Carrot(this.game, this.carrotGroup.countLiving(), x, y);
+        //console.log(RabbitMaker);
+        rabbit = RabbitMaker.Rabbit(this.game, x, y);
+        //console.log(rabbit);
         this.rabbitGroup.add(rabbit);
     }
 
@@ -230,4 +343,10 @@ GameState.prototype.launchRabbit = function(x, y, FEET_PER_SECOND) {
     rabbit.speed = 1 * FEET_PER_SECOND; //pixels per second
 
     return rabbit;
+};
+
+GameState.prototype.getRandomPos = function() {
+    var _x = Math.floor(ROT.RNG.getUniform()*(this.game.world.width-50) + 25);
+    var _y = Math.floor(ROT.RNG.getUniform()*(this.game.world.height-50) + 25);
+    return {x:_x, y:_y};
 };

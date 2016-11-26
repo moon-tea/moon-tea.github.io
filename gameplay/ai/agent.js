@@ -1,50 +1,71 @@
-var Agent = function(name) {
-    this.name = name;
-    this.actions = [];
-    this.currentActions = [];
+var AgentMaker = {
+    Agent: function(name) {
+        var obj = {
+            name: name,
+            actions: [],
+            currentActions: [],
 
-    this.state = {};
+            state: {},
+            sm: new StateMachine(),
+            
+            updateStateMachine: function() {
+                //console.log(this.sm)
+                this.sm.update();
+            },
 
-    this.sm = new StateMachine();
+            addAction: function(action) {
+                action.agents.push(this);
+                this.actions.push(action);
+            },
 
-    this.sm.add("idle", new IdleState(this));
-    this.sm.add("moving", new MovingState(this));
-    this.sm.add("action", new ActionState(this));
+            removeAction: function(action) {
+                this.actions.splice( this.actions.map( function(e) { return e.name; } ).indexOf(action.name), 1 );
+            },
 
-    this.sm.enter("idle");
+            // get all actions with cleared preconditions
+            getUsableActions: function() {
+                return this.actions.filter( function(a) {
+                    return a.canExecute();
+                });
+            },
 
-    return this; 
-};
+            applyAction: function(action) {
+                for(var effect in action.effects) {
+                    if (typeof action.effects[effect] === 'number') {
+                        this.incrementState(effect, action.effects[effect]);
+                        console.log(this);
+                    } else {
+                        this.setState(effect, action.effects[effect]);
+                    }
+                }
+            },
 
-Agent.prototype = Object.create(Phaser.Graphics.prototype);
+            setState: function(name, value) {
+                this.state[name] = value;
+            },
 
-Agent.prototype.update = function() {
-    this.sm.update();
-};
+            incrementState: function(name, value) {
+                this.state[name] = this.state[name] + value;
+            },
 
-Agent.prototype.addAction = function(action) {
-    action.agent = this;
+            is: function(name, value) {
+                return this.state[name] == value;
+            }
+        };
 
-    this.actions.push(action);
-};
+        //obj.sm.add("idle", new IdleState(obj));
+        //obj.sm.add("moving", new MovingState(obj));
+        //obj.sm.add("action", new ActionState(obj));
 
-Agent.prototype.applyAction = function(action) {
-    for(var effect in action.effects) {
-        this.setState(effect, action.effects[effect]);
+        //obj.sm.enter("idle");
+        return obj;
     }
-}
-
-Agent.prototype.setState = function(name, value) {
-    this.state[name] = value;
 };
 
-Agent.prototype.is = function(name, value) {
-    return this.state[name] == value;
-};
+//Agent.prototype = Object.create(SmartObject.prototype);
+//Agent.prototype.constructor = Agent;
 
-Agent.prototype.getUsableActions = function() {
-    // get all actions with cleared preconditions
-    return this.actions.filter(function(action) {
-        return action.canExecute();
-    });
-};
+//we put this here to eventually update agent specific stuff, 
+//and so that the children of Agent can call this
+//Agent.prototype.update = function() {
+

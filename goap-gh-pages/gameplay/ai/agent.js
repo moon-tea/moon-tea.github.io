@@ -1,4 +1,4 @@
-var Agent = function(name) {
+Agent = function(name) {
     this.name = name;
     this.actions = [];
     //this.currentActions = [];
@@ -15,6 +15,7 @@ var Agent = function(name) {
 };
 
 Agent.prototype.update = function() {
+    console.log(this.name, "updating");
     this.sm.update();
 };
 

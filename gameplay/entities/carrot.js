@@ -1,32 +1,22 @@
-Carrot = function(game, x, y) {
-    //Phaser.Sprite.call(this, game, x, y, 'rocket');
-    Phaser.Graphics.call(this, game, x, y);
-    this.graphics = game.add.graphics(0, 0);
-    window.graphics = this.graphics;
-    
-    // Set the pivot point for this sprite to the center
-    this.anchor.setTo(0.5, 0.5);
-    
-    // Define constants that affect collision
-    this.EAT_DISTANCE = 4; //pixels
-    this.CALORIE_COUNT = 24;
+//A factory for creating a certain type of vegatable or food, a carrot
+//This is a strict object composition using assign and mixins.
+var CarrotMaker = {
+    Carrot: function(game, id, x, y) {
+        var colors = ["0xE59400"];
+        var rand = Math.floor(Math.random() * colors.length);
+        var carrot = Object.assign(
+            new GraphicsObject(game, x, y), // the base object, our graphics object
+            SmartObjectMaker.SmartObject(), // a smart Object so that this object may advertise actions
+            {                               // this is our state as a carrot. We could pass this in, or calculate it more
+                EAT_DISTANCE: 4, //pixels
+                calorie_count: 24, 
+                id: id,
+                color: colors[rand] //hex       
+            }
+        );
 
-    var colors = ["0xE59400"];
-    var rand = Math.floor(Math.random() * colors.length);
-    this.color = colors[rand];
-};
-
-// Rabbits are a type of Phaser.Graphics
-
-// Carrots are a type of Phaser.Graphics
-Carrot.prototype = Object.create(Phaser.Graphics.prototype);//Object.create(Phaser.Sprite.prototype);
-Carrot.prototype.constructor = Carrot;
-
-Carrot.prototype.update = function() {
-    // draw a rectangle
-    this.graphics.clear();
-    if(this.alive) {
-        graphics.lineStyle(1, this.color, 1);
-        graphics.drawRect(this.x, this.y, 1, 1);
+        //we do a post processing step to add an action to the item
+        carrot.addAdvertisedAction(new EatCarrotAction(id, x, y));
+        return carrot;
     }
 };
