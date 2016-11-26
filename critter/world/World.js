@@ -32,17 +32,14 @@ var World = {
                 }, this);
             },
             letAct: function(critter, vector) {
-                //console.log("letAct");
-                var action = critter.act(new View(this, vector));
-                if (action && action.type == "move") {
-                    //console.log("move");
-                    var dest = this.checkDestination(action, vector);
-                    if (dest && 
-                        this.grid.get(dest) &&
-                        this.grid.get(dest).type == "empty") {
+                var action = critter.act(View.create(this, vector));
+                var handled = action &&
+                    action.type in actionTypes &&
+                    actionTypes[action.type].call(this, critter, vector, action);
+                if (!handled) {
+                    critter.energy -= 0.2;
+                    if (critter.energy <= 0)
                         this.grid.set(vector, elementFromChar(this.legend, " "));
-                        this.grid.set(dest, critter);
-                    }
                 }
             },
             checkDestination: function(action, vector) {
