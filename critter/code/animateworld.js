@@ -21,7 +21,7 @@
     this.disabled = false;
     if (active) active.disable();
     active = this;
-    this.interval = setInterval(function() { self.tick(); }, 50);
+    this.interval = setInterval(function() { self.tick(); }, 200);
   }
 
   Animated.prototype.clicked = function() {
