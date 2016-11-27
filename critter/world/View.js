@@ -14,10 +14,20 @@ var View = {
             },
             findAll: function(props) {
                 var found = [];
-                for (var dir in directions)
-                    if (this.look(dir) && this.look(dir).type == props.type) {
+                for (var dir in directions) {
+                    var checkAllProps = true;
+                    for(var key in props) {
+                        if(key == "walkable") {
+                            //console.log("key is walkable", this.look(dir), this.look(dir)[key],props[key]);
+                        }
+                        //if (this.look(dir) && this.look(dir)[key] == props[key]) {
+                        checkAllProps = checkAllProps && (this.look(dir) && this.look(dir)[key] == props[key]);
+                    }
+                    if(checkAllProps) {
+                        //console.log(props, "found")
                         found.push(dir);
                     }
+                }
                 return found;
             },
             find: function(props) {

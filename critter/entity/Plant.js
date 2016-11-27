@@ -6,6 +6,7 @@ var Plant = {
       name: "Plant"+Plant.count,
       type: "plant",
       energy: 3 + Math.random() * 4,
+      walkable: true,
       act: function(view) {
         if (this.energy > 15) {
           var space = view.find( { type:"empty" } );

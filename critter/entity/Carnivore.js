@@ -23,7 +23,8 @@ var Carnivore = {
         if (prey.length && seenPerTurn > 0.25)
           return {type: "eat", direction: randomElement(prey)};
           
-        var space = view.find({type:"empty"});
+        //var space = view.find({type:"empty"});
+        var space = view.find({ walkable: true });
         if (this.energy > 300 && !this.grownUp)
           return {type: "growUp"};
         if (this.energy > 400 && space)
