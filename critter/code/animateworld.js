@@ -11,7 +11,9 @@
     var node = outer.appendChild(doc.createElement("div"));
     node.style.cssText = "position: relative; width: intrinsic; width: fit-content;";
     this.pre = node.appendChild(doc.createElement("pre"));
-    this.pre.appendChild(doc.createTextNode(world.toString()));
+    //this.pre.appendChild(doc.createTextNode(world.toString()));
+    //this.pre.appendChild(world.render());
+    this.pre.appendChild(world.getDisplay());
     this.button = node.appendChild(doc.createElement("div"));
     this.button.style.cssText = "position: absolute; bottom: 8px; right: -4.5em; color: white; font-family: tahoma, arial; " +
       "background: #4ab; cursor: pointer; border-radius: 18px; font-size: 70%; width: 3.5em; text-align: center;";
@@ -32,7 +34,7 @@
       this.button.innerHTML = "start";
     } else {
       var self = this;
-      this.interval = setInterval(function() { self.tick(); }, 333);
+      this.interval = setInterval(function() { self.tick(); }, 100);
       this.button.innerHTML = "stop";
     }
   };
@@ -40,8 +42,11 @@
   Animated.prototype.tick = function() {
     //console.log(this.world);
     this.world.turn();
-    this.pre.removeChild(this.pre.firstChild);
-    this.pre.appendChild(this.pre.ownerDocument.createTextNode(this.world.toString()));
+    //this.pre.removeChild(this.pre.firstChild);
+    //this.pre.removeChild(this.pre.firstChild);
+    //this.pre.appendChild(this.pre.ownerDocument.createTextNode(this.world.toString()));
+    //this.pre.appendChild(this.world.render());
+    this.world.tick();
   };
 
   Animated.prototype.disable = function() {

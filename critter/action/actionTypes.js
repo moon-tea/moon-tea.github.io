@@ -8,6 +8,7 @@ var actionTypes = {
         var destObj = this.grid.get(dest);
         //console.log(destObj);
         critter.standingOn = destObj;
+        critter.backgroundColor = critter.standingOn.backgroundColor;
         if (dest == null ||
                 critter.energy <= 1 ||
                 (this.grid.get(dest) && !this.grid.get(dest).walkable))
@@ -31,6 +32,10 @@ var actionTypes = {
     reproduce: function(critter, vector, action) {
         var baby = elementFromChar(this.legend, critter.babyChar);
         var dest = this.checkDestination(action, vector);
+        var destObj = this.grid.get(dest);
+        //console.log(destObj);
+        baby.standingOn = destObj;
+        baby.backgroundColor = baby.standingOn.backgroundColor;
         if (dest == null ||
                 critter.energy <= 2 * baby.energy ||
                 this.grid.get(dest).type != "empty")
@@ -40,7 +45,7 @@ var actionTypes = {
         return true;
     },
     growUp: function(critter) {
-        console.log(critter.name, "grew up!")
+        //console.log(critter.name, "grew up!")
         critter.originChar = critter.adultChar;
         critter.grownUp = true;
     }

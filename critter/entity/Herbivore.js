@@ -7,8 +7,9 @@ var Herbivore = {
       energy: 30,
       type: "herbivore",
       direction: "e",
+      foregroundColor: "#3333FF",
       act: function(view) {
-        var space = view.find({ walkable: true });
+        var space = view.find({ type: "empty" });
         if (this.energy > 60 && !this.grownUp)
           return {type: "growUp"};
         if (this.energy > 90 && space)

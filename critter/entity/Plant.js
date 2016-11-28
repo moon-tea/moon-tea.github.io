@@ -7,6 +7,8 @@ var Plant = {
       type: "plant",
       energy: 3 + Math.random() * 4,
       walkable: true,
+      foregroundColor: "#22370e",
+      backgroundColor: randomElement(Empty.bgColors),
       act: function(view) {
         if (this.energy > 15) {
           var space = view.find( { type:"empty" } );

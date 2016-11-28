@@ -6,6 +6,7 @@ var Carnivore = {
       name: "Carnivore"+Carnivore.count,
       energy: 100,
       direction: "w",
+      foregroundColor: "#DD4444",
       // Used to track the amount of prey seen per turn in the last six turns
       preySeen: [],
       act: function(view) {
