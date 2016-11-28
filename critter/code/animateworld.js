@@ -23,7 +23,7 @@
     this.disabled = false;
     if (active) active.disable();
     active = this;
-    this.interval = setInterval(function() { self.tick(); }, 100);
+    this.interval = setInterval(function() { self.tick(); }, 50);
   }
 
   Animated.prototype.clicked = function() {
@@ -34,7 +34,7 @@
       this.button.innerHTML = "start";
     } else {
       var self = this;
-      this.interval = setInterval(function() { self.tick(); }, 100);
+      this.interval = setInterval(function() { self.tick(); }, 50);
       this.button.innerHTML = "stop";
     }
   };

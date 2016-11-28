@@ -11,17 +11,20 @@ var Carnivore = {
       preySeen: [],
       act: function(view) {
         // Average number of prey seen per turn
-        var seenPerTurn = this.preySeen.reduce(function(a, b) {
+        /*var seenPerTurn = this.preySeen.reduce(function(a, b) {
           return a + b;
         }, 0) / this.preySeen.length;
+        */
         var prey = view.findAll({type: "herbivore"});
+        /*
         this.preySeen.push(prey.length);
         // Drop the first element from the array when it is longer than 6
         if (this.preySeen.length > 6)
           this.preySeen.shift();
-
+        */
         // Only eat if the predator saw more than ¼ prey animal per turn
-        if (prey.length && seenPerTurn > 0.25)
+        
+        if (prey.length )//&& seenPerTurn > 0.25)
           return {type: "eat", direction: randomElement(prey)};
           
         //var space = view.find({type:"empty"});

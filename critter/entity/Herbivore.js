@@ -9,7 +9,7 @@ var Herbivore = {
       direction: "e",
       foregroundColor: "#3333FF",
       act: function(view) {
-        var space = view.find({ type: "empty" });
+        var space = view.find({ walkable: true });
         if (this.energy > 60 && !this.grownUp)
           return {type: "growUp"};
         if (this.energy > 90 && space)

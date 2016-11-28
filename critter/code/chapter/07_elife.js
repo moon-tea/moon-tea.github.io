@@ -69,8 +69,8 @@ var valley = World.create(
   { 
     " ": { "factory": Empty.create },
     "#": { "factory": Wall.create },
-    "W": { "factory": Carnivore.create, "babyChar": "w", "adultChar": "W" },
-    "w": { "factory": Carnivore.create, "babyChar": "w", "adultChar": "W" },
+    "W": { "factory": Entity.create(wolf), "babyChar": "w", "adultChar": "W" },
+    "w": { "factory": Entity.create(wolf), "babyChar": "w", "adultChar": "W" },
     "R": { "factory": Herbivore.create, "babyChar": "r", "adultChar": "R" }, 
     "r": { "factory": Herbivore.create, "babyChar": "r", "adultChar": "R" }, 
     '"': { "factory": Plant.create, "babyChar": '"'}
